@@ -1,0 +1,157 @@
+# requiring 
+```{r}
+# install.packages("tidyverse")
+require("tidyverse")
+require("readr")
+
+install.packages("remotes")
+remotes::install_github("plotly/dashR", upgrade = "always")
+require(dash)
+install.packages("dashCoreComponents")
+require(dashCoreComponents)
+```
+# Import
+```{r}
+# 1.roadside_CausewayBay
+
+roadside_CausewayBay <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_CausewayBay_roadside_01011998_06302022.csv")
+# write_excel_csv(roadside_CausewayBay, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\roadside_CausewayBay.csv")
+
+# 2.roadside_Central
+
+roadside_Central <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_Central_roadside_01011999_06302022.csv")
+# write_excel_csv(roadside_Central, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\roadside_Central.csv")
+
+# 3.CentralWest
+
+CentralWest <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_CentralWestern_01011990_06302022.csv")
+# write_excel_csv(CentralWest, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\CentralWest.csv")
+
+# 4.Eastern
+
+Eastern <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_Eastern_01011999_06302022.csv")
+# write_excel_csv(Eastern, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\Eastern.csv")
+
+# 5.KwaiChung
+
+KwaiChung <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_KwaiChung_01011990_06302022.csv")
+# write_excel_csv(KwaiChung, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\KwaiChung.csv")
+
+# 6.KwunTong
+
+KwunTong <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_KwunTong_01011990_06302022.csv")
+# write_excel_csv(KwunTong, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\KwunTong.csv")
+
+# 7.roadside_MongKok
+
+roadside_MongKok <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_MongKok_roadside_04011991_06302022.csv")
+# write_excel_csv(roadside_MongKok, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\roadside_MongKok.csv")
+
+# 8.North
+
+North <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_North_07102020_06302022.csv")
+# write_excel_csv(North, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\North.csv")
+
+# 9.ShamShuiPo
+
+ShamShuiPo <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_ShamShuiPo_01011990_06302022.csv")
+# write_excel_csv(ShamShuiPo, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\ShamShuiPo.csv")
+
+# 10.ShaTin
+
+ShaTin <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_ShaTin_07011991_06302022.csv")
+# write_excel_csv(ShaTin, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\ShaTin.csv")
+
+# 11.Southern
+
+Southern <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_Southern_07102020_06302022.csv")
+# write_excel_csv(Southern, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\Southern.csv")
+
+# 12.TaiPo
+
+TaiPo <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_TaiPo_02011990_06302022.csv")
+# write_excel_csv(TaiPo, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\TaiPo.csv")
+
+# 13.TapMun
+
+TapMun <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_TapMun_04011998_06302022.csv")
+# write_excel_csv(TapMun, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\TapMun.csv")
+
+# 14.TseungKwanO
+
+TseungKwanO <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_TseungKwanO_03162016_06302022.csv")
+# write_excel_csv(TseungKwanO, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\TseungKwanO.csv")
+
+# 15.TsuenWan
+
+TsuenWan <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_TsuenWan_01011990_06302022.csv")
+# write_excel_csv(TsuenWan, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\TsuenWan.csv")
+
+# 16.TuenMun
+
+TuenMun <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_TuenMun_01012014_06302022.csv")
+# write_excel_csv(TuenMun, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\TuenMun.csv")
+
+# 17.TungChung
+
+TungChung <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_TungChung_04011999_06302022.csv")
+#write_excel_csv(TungChung, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\TungChung.csv")
+
+# 18.YuenLong
+
+YuenLong <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_station(-06302022)\\air_hourly_YuenLong_08011995_06302022.csv")
+# write_excel_csv(YuenLong, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\YuenLong.csv")
+```
+
+# Cleanse
+```{r}
+# all <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\all.csv")
+all <- do.call("rbind", list(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo, ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong))
+colnames(all)[which(names(all) == "日期")] <- "date"
+colnames(all)[which(names(all) == "小時")] <- "hour"
+colnames(all)[which(names(all) == "監測站")] <- "station"
+temp_all <- all
+temp_all[, c("NOX", "CO")] <- list(NULL) 
+temp_all[, c('FSP', 'NO2', 'O3', 'RSP', 'SO2')] <- temp_all[, c('NO2', 'SO2', 'O3', 'RSP', 'FSP')]
+colnames(temp_all)[-1:-3] <- c('NO2', 'SO2', 'O3', 'RSP', 'FSP')
+
+CentralWest <- subset(temp_all, temp_all$station == "中西區")
+Eastern <- subset(temp_all, temp_all$station == "東區")
+KwaiChung <- subset(temp_all, temp_all$station == "葵涌")
+KwunTong <- subset(temp_all, temp_all$station == "觀塘")
+North <- subset(temp_all, temp_all$station == "北區")
+roadside_CausewayBay <- subset(temp_all, temp_all$station == "銅鑼灣")
+roadside_Central <- subset(temp_all, temp_all$station == "中環")
+roadside_MongKok <- subset(temp_all, temp_all$station == "旺角")
+ShamShuiPo <- subset(temp_all, temp_all$station == "深水埗")
+ShaTin <- subset(temp_all, temp_all$station == "沙田")
+Southern <- subset(temp_all, temp_all$station == "南區")
+TaiPo <- subset(temp_all, temp_all$station == "大埔")
+TapMun <- subset(temp_all, temp_all$station == "塔門")
+TseungKwanO <- subset(temp_all, temp_all$station == "將軍澳")
+TsuenWan <- subset(temp_all, temp_all$station == "荃灣")
+TuenMun <- subset(temp_all, temp_all$station == "屯門")
+TungChung <- subset(temp_all, temp_all$station == "東涌")
+YuenLong <- subset(temp_all, temp_all$station == "元朗")
+
+general <- subset(temp_all, temp_all$station != "銅鑼灣" & temp_all$station != "中環" & temp_all$station != "旺角")
+roadside <- subset(temp_all, temp_all$station == "銅鑼灣" | temp_all$station == "中環" | temp_all$station == "旺角")
+
+write_excel_csv(temp_all, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\all.csv")
+write_excel_csv(roadside, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\roadside.csv")
+write_excel_csv(general, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\general.csv")
+```
+
+
+#draft
+```{r}
+#roadside_Central <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\roadside_CausewayBay.csv")
+#all <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\all.csv")
+#temp_all <- all
+#temp_all[, c("NOX", "CO")] <- list(NULL) 
+#temp_all[, c('FSP', 'NO2', 'O3', 'RSP', 'SO2')] <- temp_all[, c('NO2', 'SO2', 'O3', 'RSP', 'FSP')]
+#colnames(temp_all)[-1:-3] <- c('NO2', 'SO2', 'O3', 'RSP', 'FSP')
+```
+
+
+
