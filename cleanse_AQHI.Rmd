@@ -1,15 +1,16 @@
 # requiring 
 ```{r}
 # install.packages("tidyverse")
-# require("tidyverse")
-# require("readr")
+require("tidyverse")
+require("readr")
 
-# install.packages("remotes")
-# remotes::install_github("plotly/dashR", upgrade = "always")
-# require(dash)
-# install.packages("dashCoreComponents")
-# require(dashCoreComponents)
+install.packages("remotes")
+remotes::install_github("plotly/dashR", upgrade = "always")
+require(dash)
+install.packages("dashCoreComponents")
+require(dashCoreComponents)
 ```
+
 # Import
 ```{r}
 # 1.roadside_CausewayBay
@@ -103,91 +104,135 @@ YuenLong <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_statio
 # write_excel_csv(YuenLong, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\YuenLong.csv")
 ```
 
-# Cleanse
+# Cleanse(1)
 ```{r}
 # all <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\all.csv")
+
+# Combine data as one dataset
 all <- do.call("rbind", list(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo, ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong))
+
+# Change the Chinese character to English
 colnames(all)[which(names(all) == "日期")] <- "date"
 colnames(all)[which(names(all) == "小時")] <- "hour"
 colnames(all)[which(names(all) == "監測站")] <- "station"
+# ... and remove unnecessary value
 temp_all <- all
 temp_all[, c("NOX", "CO")] <- list(NULL) 
 temp_all[, c('FSP', 'NO2', 'O3', 'RSP', 'SO2')] <- temp_all[, c('NO2', 'SO2', 'O3', 'RSP', 'FSP')]
 colnames(temp_all)[-1:-3] <- c('NO2', 'SO2', 'O3', 'RSP', 'FSP')
+# (cont.) Change the Chinese character to English
+temp_all$station[temp_all$station == "中西區"] <- 'CentralWest'
+temp_all$station[temp_all$station == "東區"] <- 'Eastern'
+temp_all$station[temp_all$station == "葵涌"] <- 'KwaiChung'
+temp_all$station[temp_all$station == "觀塘"] <- 'KwunTong'
+temp_all$station[temp_all$station == "北區"] <- 'North'
+temp_all$station[temp_all$station == "銅鑼灣"] <- 'roadside_CausewayBay'
+temp_all$station[temp_all$station == "中環"] <- 'roadside_Central'
+temp_all$station[temp_all$station == "旺角"] <- 'roadside_MongKok'
+temp_all$station[temp_all$station == "深水埗"] <- 'ShamShuiPo'
+temp_all$station[temp_all$station == "沙田"] <- 'ShaTin'
+temp_all$station[temp_all$station == "南區"] <- 'Southern'
+temp_all$station[temp_all$station == "大埔"] <- 'TaiPo'
+temp_all$station[temp_all$station == "塔門"] <- 'TapMun'
+temp_all$station[temp_all$station == "將軍澳"] <- 'TseungKwanO'
+temp_all$station[temp_all$station == "荃灣"] <- 'TsuenWan'
+temp_all$station[temp_all$station == "屯門"] <- 'TuenMun'
+temp_all$station[temp_all$station == "東涌"] <- 'TungChung'
+temp_all$station[temp_all$station == "元朗"] <- 'YuenLong'
 
-CentralWest <- subset(temp_all, temp_all$station == "中西區")
-write_excel_csv(CentralWest, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\CentralWest.csv")
+# separate to different station (for testing if need)
+CentralWest <- subset(temp_all, temp_all$station == 'CentralWest')
+Eastern <- subset(temp_all, temp_all$station == 'Eastern')
+# KwaiChung <- subset(temp_all, temp_all$station == 'KwaiChung')
+# KwunTong <- subset(temp_all, temp_all$station == 'KwunTong')
+# North <- subset(temp_all, temp_all$station == 'North')
+roadside_CausewayBay <- subset(temp_all, temp_all$station == 'roadside_CausewayBay')
+# roadside_Central <- subset(temp_all, temp_all$station == 'roadside_Central')
+# roadside_MongKok <- subset(temp_all, temp_all$station == 'roadside_MongKok')
+# ShamShuiPo <- subset(temp_all, temp_all$station == 'ShamShuiPo')
+# ShaTin <- subset(temp_all, temp_all$station == 'ShaTin')
+# Southern <- subset(temp_all, temp_all$station == 'Southern')
+# TaiPo <- subset(temp_all, temp_all$station == 'TaiPo')
+TapMun <- subset(temp_all, temp_all$station == 'TapMun')
+# TseungKwanO <- subset(temp_all, temp_all$station == 'TseungKwanO')
+# TsuenWan <- subset(temp_all, temp_all$station == 'TsuenWan')
+# TuenMun <- subset(temp_all, temp_all$station == 'TuenMun')
+# TungChung <- subset(temp_all, temp_all$station == 'TungChung')
+# YuenLong <- subset(temp_all, temp_all$station == 'YuenLong')
 
-Eastern <- subset(temp_all, temp_all$station == "東區")
-write_excel_csv(Eastern, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\Eastern.csv")
+# general <- subset(temp_all, temp_all$station != 'roadside_CausewayBay' 
+#                   & temp_all$station != 'roadside_Central' 
+#                   & temp_all$station != 'roadside_MongKok')
+# roadside <- subset(temp_all, temp_all$station == 'roadside_CausewayBay' 
+#                    | temp_all$station == 'roadside_Central' 
+#                    | temp_all$station == 'roadside_MongKok')
 
-KwaiChung <- subset(temp_all, temp_all$station == "葵涌")
-write_excel_csv(KwaiChung, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\KwaiChung.csv")
-
-KwunTong <- subset(temp_all, temp_all$station == "觀塘")
-write_excel_csv(KwunTong, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\KwunTong.csv")
-
-North <- subset(temp_all, temp_all$station == "北區")
-write_excel_csv(North, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\North.csv")
-
-roadside_CausewayBay <- subset(temp_all, temp_all$station == "銅鑼灣")
-write_excel_csv(roadside_CausewayBay, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\roadside_CausewayBay.csv")
-
-roadside_Central <- subset(temp_all, temp_all$station == "中環")
-write_excel_csv(roadside_Central, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\roadside_Central.csv")
-
-roadside_MongKok <- subset(temp_all, temp_all$station == "旺角")
-write_excel_csv(roadside_MongKok, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\roadside_MongKok.csv")
-
-ShamShuiPo <- subset(temp_all, temp_all$station == "深水埗")
-write_excel_csv(ShamShuiPo, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\ShamShuiPo.csv")
-
-ShaTin <- subset(temp_all, temp_all$station == "沙田")
-write_excel_csv(ShaTin, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\ShaTin.csv")
-
-Southern <- subset(temp_all, temp_all$station == "南區")
-write_excel_csv(Southern, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\Southern.csv")
-
-TaiPo <- subset(temp_all, temp_all$station == "大埔")
-write_excel_csv(TaiPo, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\TaiPo.csv")
-
-TapMun <- subset(temp_all, temp_all$station == "塔門")
-write_excel_csv(TapMun, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\TapMun.csv")
-
-TseungKwanO <- subset(temp_all, temp_all$station == "將軍澳")
-write_excel_csv(TseungKwanO, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\TseungKwanO.csv")
-
-TsuenWan <- subset(temp_all, temp_all$station == "荃灣")
-write_excel_csv(TsuenWan, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\TsuenWan.csv")
-
-TuenMun <- subset(temp_all, temp_all$station == "屯門")
-write_excel_csv(TuenMun, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\TuenMun.csv")
-
-TungChung <- subset(temp_all, temp_all$station == "東涌")
-write_excel_csv(TungChung, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\TungChung.csv")
-
-YuenLong <- subset(temp_all, temp_all$station == "元朗")
-write_excel_csv(YuenLong, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\YuenLong.csv")
-
-
-general <- subset(temp_all, temp_all$station != "銅鑼灣" & temp_all$station != "中環" & temp_all$station != "旺角")
-roadside <- subset(temp_all, temp_all$station == "銅鑼灣" | temp_all$station == "中環" | temp_all$station == "旺角")
-
+# Export
 write_excel_csv(temp_all, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\all.csv")
-write_excel_csv(roadside, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\roadside.csv")
-write_excel_csv(general, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\general.csv")
+# write_excel_csv(roadside, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\roadside.csv")
+# write_excel_csv(general, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\general.csv")
 ```
 
-
-#draft
+# Cleanse(2)
 ```{r}
-#roadside_Central <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\roadside_CausewayBay.csv")
-#all <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\all.csv")
-#temp_all <- all
-#temp_all[, c("NOX", "CO")] <- list(NULL) 
-#temp_all[, c('FSP', 'NO2', 'O3', 'RSP', 'SO2')] <- temp_all[, c('NO2', 'SO2', 'O3', 'RSP', 'FSP')]
-#colnames(temp_all)[-1:-3] <- c('NO2', 'SO2', 'O3', 'RSP', 'FSP')
+# temp_all <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\all.csv")
+
+# Set date to POSIX date (ISOdate), and add a column "HKTdate" for reference
+temp_all$date <- as.Date(temp_all$date, format = "%d/%m/%Y")
+temp_all <- temp_all %>% relocate(hour, .after = station)
+temp_all$HKTdate <- temp_all$date
+temp_all <- temp_all %>% relocate(HKTdate, .after = station)
+temp_all$date <- ISOdate(temp_all$date, as.numeric(temp_all$hour),0,0)
+# Change the "N.A." value to null
+temp_all$NO2 <- str_remove_all(temp_all$NO2,"N.A.")
+temp_all$SO2 <- str_remove_all(temp_all$SO2,"N.A.")
+temp_all$O3 <- str_remove_all(temp_all$O3,"N.A.")
+temp_all$FSP <- str_remove_all(temp_all$FSP,"N.A.")
+temp_all$RSP <- str_remove_all(temp_all$RSP,"N.A.")
+# Correct the data type of pollutant
+temp_all$NO2 <- as.numeric(temp_all$NO2)
+temp_all$SO2 <- as.numeric(temp_all$SO2)
+temp_all$O3 <- as.numeric(temp_all$O3)
+temp_all$RSP <- as.numeric(temp_all$RSP)
+temp_all$FSP <- as.numeric(temp_all$FSP)
+
+# Export
+write_excel_csv(temp_all, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\all_with_NULL.csv")
+
+# Cross out the data which the AQHI can't be calculated because of the missing value
+noNa_all <- subset(temp_all, !(is.na(temp_all$NO2)|is.na(temp_all$SO2)|is.na(temp_all$O3)|(is.na(temp_all$RSP)&is.na(temp_all$FSP))))
+
+# Export
+write_excel_csv(noNa_all, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\all_wo_NULL.csv")
+
 ```
 
+# note:
+```{r}
+## 每小時的空氣質素健康指數，是根據四種主要空氣污染物，包括臭氧(O3)、二氧化氮(NO2)、二氧化硫(SO2)和懸浮粒子(PM) [可吸入懸浮粒子(RSP 或 PM10) 或 微細懸浮粒子(FSP 或 PM2.5)，以健康風險較大者為準)] 的三小時移動平均污染物濃度，以估算四種空氣污染物所導致入院的個別健康風險增幅的總和(%AR) 而轉化得出。個別空氣污染物的健康風險增幅，視乎該污染物的濃度和從分析本地健康統計數字和空氣污染數據而得出的風險系數。健康風險增幅會與一個空氣質素健康指數的等級表對照，以釐定空氣質素健康指數級別。計算公式如下:
 
+## 健康風險增幅(%AR) = %AR (NO2) + %AR (SO2) + %AR (O3) + %AR (PM)
 
+## %AR (PM) = %AR (PM10) 或 %AR (PM2.5), 以風險較大者為準
+
+## %AR(NO2) = [exp (β(NO2) × C(NO2)) – 1] × 100%
+## %AR(SO2) = [exp (β(SO2) × C(SO2)) – 1] × 100%
+## %AR(O3) = [exp (β(O3) × C(O3)) – 1] × 100%
+## %AR(PM10) = [exp (β(PM10) × C(PM10)) – 1] × 100%
+## %AR(PM2.5) = [exp (β(PM2.5) × C(PM2.5)) – 1] × 100%
+
+## 公式中-
+
+## %AR(NO2), %AR (SO2), %AR (O3), %AR (PM), %AR (PM10) 及 %AR (PM2.5)分別是二氧化氮、二氧化硫、臭氧、懸浮粒子、可吸入懸浮粒子和微細懸浮粒子的個別健康風險增幅;
+
+## C(NO2), C(SO2), C(O3), C(PM10) 及 C(PM2.5) 是各污染物的三小時移動平均濃度(以微克/立方米計); 及
+
+## β(NO2), β(SO2), β(O3), β(PM10) 及 β(PM2.5) 是各污染物的風險系數 (即學術上的回歸系數)
+
+## β(NO2) = 0.0004462559
+## β(SO2) = 0.0001393235
+## β(O3) = 0.0005116328
+## β(PM10) = 0.0002821751
+## β(PM2.5) = 0.0002180567
+
+```
