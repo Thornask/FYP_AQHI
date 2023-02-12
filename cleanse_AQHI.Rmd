@@ -4,10 +4,10 @@
 require("tidyverse")
 require("readr")
 
-install.packages("remotes")
-remotes::install_github("plotly/dashR", upgrade = "always")
+# install.packages("remotes")
+# remotes::install_github("plotly/dashR", upgrade = "always")
 require(dash)
-install.packages("dashCoreComponents")
+# install.packages("dashCoreComponents")
 require(dashCoreComponents)
 ```
 
@@ -111,6 +111,9 @@ YuenLong <- read_csv("C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\in_statio
 # Combine data as one dataset
 all <- do.call("rbind", list(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo, ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong))
 
+# Remove the unused dataset to release memories
+rm(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo, ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong)
+
 # Change the Chinese character to English
 colnames(all)[which(names(all) == "日期")] <- "date"
 colnames(all)[which(names(all) == "小時")] <- "hour"
@@ -153,7 +156,7 @@ roadside_CausewayBay <- subset(temp_all, temp_all$station == 'roadside_CausewayB
 # ShaTin <- subset(temp_all, temp_all$station == 'ShaTin')
 # Southern <- subset(temp_all, temp_all$station == 'Southern')
 # TaiPo <- subset(temp_all, temp_all$station == 'TaiPo')
-TapMun <- subset(temp_all, temp_all$station == 'TapMun')
+# TapMun <- subset(temp_all, temp_all$station == 'TapMun')
 # TseungKwanO <- subset(temp_all, temp_all$station == 'TseungKwanO')
 # TsuenWan <- subset(temp_all, temp_all$station == 'TsuenWan')
 # TuenMun <- subset(temp_all, temp_all$station == 'TuenMun')
