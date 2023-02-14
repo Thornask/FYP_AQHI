@@ -164,7 +164,7 @@ noNa_all <- subset(temp_all, !(is.na(temp_all$NO2)|is.na(temp_all$SO2)|is.na(tem
 # Export (stations)
 ```{r}
 # separate to different station (if need)
-sel_df <- noNa_all
+sel_df <-temp_all
 for(x in station_egName){
   tp <- sel_df[sel_df$station == x, ]
   tp <- subset(tp, select = -station)
