@@ -3,12 +3,7 @@
 # install.packages("tidyverse")
 require("tidyverse")
 require("readr")
-
-# install.packages("remotes")
-# remotes::install_github("plotly/dashR", upgrade = "always")
-# require(dash)
-# install.packages("dashCoreComponents")
-# require(dashCoreComponents)
+require("Hmisc")
 ```
 
 # Import (Raw data)
@@ -151,26 +146,25 @@ temp_all$RSP <- as.numeric(temp_all$RSP)
 temp_all$FSP <- as.numeric(temp_all$FSP)
 
 # Export
-# write_excel_csv(temp_all, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\all_with_NULL.csv")
+write_excel_csv(temp_all, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\all_with_NULL.csv")
 
 # Cross out the data which the AQHI can't be calculated because of the missing value
-noNa_all <- subset(temp_all, !(is.na(temp_all$NO2)|is.na(temp_all$SO2)|is.na(temp_all$O3)|(is.na(temp_all$RSP)&is.na(temp_all$FSP))))
+# noNa_all <- subset(temp_all, !(is.na(temp_all$NO2)|is.na(temp_all$SO2)|is.na(temp_all$O3)|(is.na(temp_all$RSP)&is.na(temp_all$FSP))))
 
 # Export
 # write_excel_csv(noNa_all, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\all_wo_NULL.csv")
 
 ```
 
-# Export (stations)
+# Export (by stations)
 ```{r}
-# separate to different station (if need)
-sel_df <-temp_all
-for(x in station_egName){
-  tp <- sel_df[sel_df$station == x, ]
-  tp <- subset(tp, select = -station)
-  assign(x, tp)
+# separate data by station 
+df <-temp_all
+for(sel_name in station_egName){
+  sel_df <- df[df$station == sel_name, ]
+  assign(sel_name, subset(sel_df, select = -station))
 }
-rm(sel_df, tp)
+rm(df, sel_df)
 
 # export
 write_excel_csv(roadside_CausewayBay, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\roadside_CausewayBay.csv")
@@ -196,6 +190,23 @@ write_excel_csv(YuenLong, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\clea
 rm(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo, ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong)
 ```
 
+# subset a sample data from one station
+```{r}
+# filter the data from one of the station
+sel_name <- "CentralWest"
+assign(sel_name, subset(temp_all, temp_all$station == sel_name))
+```
+
+# (for uploading)
+```{r}
+# install.packages("git2rdata")
+# require("git2rdata")
+# df1 <- do.call("rbind", list(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo))
+# df2 <-  do.call("rbind", list(ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong))
+
+```
+
+
 # note:
 ```{r}
 ## 每小時的空氣質素健康指數，是根據四種主要空氣污染物，包括臭氧(O3)、二氧化氮(NO2)、二氧化硫(SO2)和懸浮粒子(PM) [可吸入懸浮粒子(RSP 或 PM10) 或 微細懸浮粒子(FSP 或 PM2.5)，以健康風險較大者為準)] 的三小時移動平均污染物濃度，以估算四種空氣污染物所導致入院的個別健康風險增幅的總和(%AR) 而轉化得出。個別空氣污染物的健康風險增幅，視乎該污染物的濃度和從分析本地健康統計數字和空氣污染數據而得出的風險系數。健康風險增幅會與一個空氣質素健康指數的等級表對照，以釐定空氣質素健康指數級別。計算公式如下:
@@ -214,7 +225,7 @@ rm(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roads
 
 ## %AR(NO2), %AR (SO2), %AR (O3), %AR (PM), %AR (PM10) 及 %AR (PM2.5)分別是二氧化氮、二氧化硫、臭氧、懸浮粒子、可吸入懸浮粒子和微細懸浮粒子的個別健康風險增幅;
 
-## C(NO2), C(SO2), C(O3), C(PM10) 及 C(PM2.5) 是各污染物的三小時移動平均濃度(以微克/立方米計); 及
+## C(NO2), C(SO2), C(O3), C(PM10) 及 C(PM2.5) 是各污染物的三小時移動平均濃度(以微克/立方米計)(ug/m3); 及
 
 ## β(NO2), β(SO2), β(O3), β(PM10) 及 β(PM2.5) 是各污染物的風險系數 (即學術上的回歸系數)
 
