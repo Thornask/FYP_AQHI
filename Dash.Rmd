@@ -12,15 +12,59 @@ require(plotly)
 
 # demo (unfinish)
 ```{r}
-# df1 <- read.csv('C:\Users\user\OneDrive\Documents\AQHI data\cleansed_dataset', header = TRUE, sep = ",")
-# df2 <- read.csv('C:\Users\user\OneDrive\Documents\AQHI data\cleansed_dataset', header = TRUE, sep = ",")
-df <- temp_all
+CentralWest <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/CentralWest.csv', header = TRUE, sep = ",")
+
+Eastern <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/Eastern.csv', header = TRUE, sep = ",")
+
+KwaiChung <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/KwaiChung.csv', header = TRUE, sep = ",")
+
+KwunTong <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/KwunTong.csv', header = TRUE, sep = ",")
+
+roadside_CausewayBay <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/roadside_CausewayBay.csv', header = TRUE, sep = ",")
+
+roadside_Central <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/roadside_Central.csv', header = TRUE, sep = ",")
+
+roadside_MongKok <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/roadside_MongKok.csv', header = TRUE, sep = ",")
+
+North <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/North.csv', header = TRUE, sep = ",")
+
+ShamShuiPo <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/ShamShuiPo.csv', header = TRUE, sep = ",")
+
+ShaTin <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/ShaTin.csv', header = TRUE, sep = ",")
+
+Southern <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/Southern.csv', header = TRUE, sep = ",")
+
+TaiPo <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/TaiPo.csv', header = TRUE, sep = ",")
+
+TapMun <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/TapMun.csv', header = TRUE, sep = ",")
+
+TseungKwanO <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/TseungKwanO.csv', header = TRUE, sep = ",")
+
+TsuenWan <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/TsuenWan.csv', header = TRUE, sep = ",")
+
+TuenMun <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/TuenMun.csv', header = TRUE, sep = ",")
+
+TungChung <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/TungChung.csv', header = TRUE, sep = ",")
+
+YuenLong <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/YuenLong.csv', header = TRUE, sep = ",")
+
+df <- do.call("rbind", list(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo, ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong))
+
+rm(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo, ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong)
+
+# dash
 pollutant <- c("NO2", "SO2", "O3", "RSP", "FSP")
-option_pollutant <- lapply(pollutant, function(x) list(label = x, value = x))
-option_stations <- lapply(unique(df$station), function(x) list(label = x, value = x))
+option_pollutant <- lapply(pollutant, 
+                           function(x) list(label = x, value = x))
+
+option_stations <- lapply(unique(df$station), 
+                          function(x) list(label = x, value = x))
+
 months <- list("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12")
-option_months <- lapply(months, function(x) list(label = x, value = x))
-yrs <- unique(format(df$date, format = "%Y"))
+option_months <- lapply(months, 
+                        function(x) list(label = x, value = x))
+
+years <- unique(format(df$date, format = "%Y"))
 
 
 app <- dash_app()
@@ -33,58 +77,102 @@ app %>% set_layout(
       backgroundColor = 'rgb(250, 250, 250)',
       padding = '10px 5px'
     ),
-
+    
     div(
-      dccDropdown(id = 'stations_option', 
-                  options = option_stations, 
-                  value = 'CentralWest',  
-                  multi = TRUE
+      dccDropdown(
+        id = 'stations_option', 
+        options = option_stations, 
+        value = 'CentralWest',  
+        multi = FALSE
       ), 
-      
-      dccRadioItems(
+      style = list(width= '49%', display= 'inline-block')
+    ),
+    
+    div(
+      dccChecklist(
         id = 'pollutant_option',
         options = option_pollutant,
         value = 'NO2', 
         labelStyle = list(display = 'inline-block')
       ),
-      style = list(width = '98%', display = 'inline-block')
+      style = list(width= '49%', flaot= 'display', display= 'inline-block')
     ),
     
     div(
-      dccGraph(
-        id = 'lines'
-      ),
-      style = list(
-        width ='49%',
-        display = 'inline-block',
-        padding = '0 20' 
-      )
+      dccGraph(id = 'main_lines'),
+      style = list(width= '95%', display= 'inline-block', padding= '0 20')
     ),
 
     div(
       dccGraph(id='bar'),
+      style = list(display= 'inline-block', width= '49%')
+    ),
+    div(
       dccGraph(id='pie'),
-      style = list(display = 'inline-block', width = '49%')
+      style = list(display= 'inline-block', flaot= 'display', width= '49%')
     ),
 
     div(
-      dccSlider(
+      dccRangeSlider(
+        id = "month_option", 
+        min = 0, 
+        max = length(months)-1,
+        marks = months, 
+        step = 1,
+        value = list(0, length(months)-1)
+      ),
+      dccRangeSlider(
         id = 'year_slider',
         min = 0,
-        max = length(yrs)-1,
-        marks = yrs,
-        value = length(yrs)-1
+        max = length(years)-1,
+        marks = years,
+        step = 1,
+        value = list(0, length(years)-1)
       ),
       
-      dccChecklist(
-        id = "month_option", 
-        options = option_months, 
-        value = months,
-        labelStyle = list(display = 'inline-block')
-      ),
-      style = list(width = '98%', padding = '0px 20px 20px 20px')
+      style = list(width = '90%', padding = '0px 20px 20px 20px')
     )
   )
+)
+
+app %>% add_callback(
+  output('main_lines', 'figure'),
+  list(
+    input('stations_option', 'value'),
+    input('pollutant_option', 'value'),
+    input('month_option', 'value'),
+    input('year_slider', 'value')
+  ),
+  function(st, pol, mth, yrs) {
+    selected_year <- years[yrs]
+    selected_month <- months[mth]
+    traces <- list()
+    
+    if (selected_year %in% years) {
+      filtered_df <- df[format(df$date, format = "%Y") %in% selected_year, ]
+      filtered_df <- filtered_df[format(filtered_df$date, format = "%m") %in% selected_month, ]
+      filtered_df <- filtered_df[filtered_df$station==st, ]
+      
+      list(
+        'data' = list(list(
+          x = unique(filtered_df$date),
+          y = filtered_df[,colnames(filtered_df) %in% pol],
+          mode = 'lines'
+        )),
+        'layout' = list(
+          height = 450,
+          margin = list('l' = 20, 'b' = 30, 'r' = 10, 't' = 10),
+          'annotations' = list(list(
+            x = 0, 'y' = 0.85, xanchor = 'left', yanchor = 'bottom',
+            xref = 'paper', yref = 'paper', showarrow = FALSE,
+            align = 'left', bgcolor = 'rgba(255, 255, 255, 0.5)',
+          )),
+          yaxis = list(type = 'linear'),
+          xaxis = list(showgrid = FALSE)
+        )
+      )
+    }
+  }
 )
 
 
