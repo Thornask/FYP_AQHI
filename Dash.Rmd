@@ -12,46 +12,46 @@ require(plotly)
 
 # demo (unfinish)
 ```{r}
-CentralWest <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/CentralWest.csv', header = TRUE, sep = ",")
+CentralWest <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/CentralWest.csv', header = TRUE, sep = ",")
 
-Eastern <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/Eastern.csv', header = TRUE, sep = ",")
+Eastern <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/Eastern.csv', header = TRUE, sep = ",")
 
-KwaiChung <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/KwaiChung.csv', header = TRUE, sep = ",")
+KwaiChung <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/KwaiChung.csv', header = TRUE, sep = ",")
 
-KwunTong <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/KwunTong.csv', header = TRUE, sep = ",")
+KwunTong <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/KwunTong.csv', header = TRUE, sep = ",")
 
-roadside_CausewayBay <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/roadside_CausewayBay.csv', header = TRUE, sep = ",")
+roadside_CausewayBay <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/roadside_CausewayBay.csv', header = TRUE, sep = ",")
 
-roadside_Central <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/roadside_Central.csv', header = TRUE, sep = ",")
+roadside_Central <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/roadside_Central.csv', header = TRUE, sep = ",")
 
-roadside_MongKok <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/roadside_MongKok.csv', header = TRUE, sep = ",")
+roadside_MongKok <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/roadside_MongKok.csv', header = TRUE, sep = ",")
 
-North <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/North.csv', header = TRUE, sep = ",")
+North <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/North.csv', header = TRUE, sep = ",")
 
-ShamShuiPo <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_1/ShamShuiPo.csv', header = TRUE, sep = ",")
+ShamShuiPo <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/ShamShuiPo.csv', header = TRUE, sep = ",")
 
-ShaTin <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/ShaTin.csv', header = TRUE, sep = ",")
+ShaTin <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/ShaTin.csv', header = TRUE, sep = ",")
 
-Southern <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/Southern.csv', header = TRUE, sep = ",")
+Southern <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/Southern.csv', header = TRUE, sep = ",")
 
-TaiPo <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/TaiPo.csv', header = TRUE, sep = ",")
+TaiPo <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/TaiPo.csv', header = TRUE, sep = ",")
 
-TapMun <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/TapMun.csv', header = TRUE, sep = ",")
+TapMun <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/TapMun.csv', header = TRUE, sep = ",")
 
-TseungKwanO <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/TseungKwanO.csv', header = TRUE, sep = ",")
+TseungKwanO <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/TseungKwanO.csv', header = TRUE, sep = ",")
 
-TsuenWan <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/TsuenWan.csv', header = TRUE, sep = ",")
+TsuenWan <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/TsuenWan.csv', header = TRUE, sep = ",")
 
-TuenMun <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/TuenMun.csv', header = TRUE, sep = ",")
+TuenMun <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/TuenMun.csv', header = TRUE, sep = ",")
 
-TungChung <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/TungChung.csv', header = TRUE, sep = ",")
+TungChung <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/TungChung.csv', header = TRUE, sep = ",")
 
-YuenLong <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/0369be6cf0672fbbb476121c89db61622be8e5b1/data%20split%20by%20station_2/YuenLong.csv', header = TRUE, sep = ",")
+YuenLong <- read.csv('https://github.com/Thornask/FYP_AQHI/blob/21a315ccc1fa8a8b38b9bf87e9df883fe2b50653/data%20split%20with%20station%20column/YuenLong.csv', header = TRUE, sep = ",")
 
-df <- do.call("rbind", list(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo, ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong))
+df_unuse <- do.call("rbind", list(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo, ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong))
 
 rm(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo, ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong)
-
+df <- temp_all
 # dash
 pollutant <- c("NO2", "SO2", "O3", "RSP", "FSP")
 option_pollutant <- lapply(pollutant, 
@@ -83,7 +83,7 @@ app %>% set_layout(
         id = 'stations_option', 
         options = option_stations, 
         value = 'CentralWest',  
-        multi = FALSE
+        multi = TRUE
       ), 
       style = list(width= '49%', display= 'inline-block')
     ),
@@ -146,7 +146,7 @@ app %>% add_callback(
   function(st, pol, mth, yrs) {
     selected_year <- years[yrs]
     selected_month <- months[mth]
-    traces <- list()
+    
     
     if (selected_year %in% years) {
       filtered_df <- df[format(df$date, format = "%Y") %in% selected_year, ]
