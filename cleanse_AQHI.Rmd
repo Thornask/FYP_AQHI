@@ -162,7 +162,8 @@ write_excel_csv(temp_all, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\clea
 df <-temp_all
 for(sel_name in station_egName){
   sel_df <- df[df$station == sel_name, ]
-  assign(sel_name, subset(sel_df, select = -station))
+  sel_df <- na.locf(sel_df, fromLast = TRUE)
+  assign(sel_name, sel_df)
 }
 rm(df, sel_df)
 
@@ -187,24 +188,23 @@ write_excel_csv(TungChung, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cle
 write_excel_csv(YuenLong, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\cleansed_dataset\\YuenLong.csv")
 
 # Remove the unused dataset to release memories
-rm(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo, ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong)
+# rm(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo, ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong)
 ```
 
-# subset a sample data from one station
+# subset sample data from station
 ```{r}
 # filter the data from one of the station
-sel_name <- "CentralWest"
-assign(sel_name, subset(temp_all, temp_all$station == sel_name))
+# sel_name <- "CentralWest"
+# assign(sel_name, subset(temp_all, temp_all$station == sel_name))
+
+# df <-temp_all
+# for(sel_name in station_egName){
+#   sel_df <- df[df$station == sel_name, ]
+#   assign(sel_name, sel_df)
+# }
+# rm(df, sel_df)
 ```
 
-# (for uploading)
-```{r}
-# install.packages("git2rdata")
-# require("git2rdata")
-# df1 <- do.call("rbind", list(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo))
-# df2 <-  do.call("rbind", list(ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong))
-
-```
 
 
 # note:
