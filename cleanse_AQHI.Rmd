@@ -217,7 +217,7 @@ write_excel_csv(YuenLong, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\clea
 # connection_string <- 'mongodb+srv://Thornask:hassiumquasar@cluster0.neeez8b.mongodb.net/test'
 # centralwest_collection <- mongo(collection="CentralWest", db="dbTseries", url=connection_string)
 # centralwest_collection$count()
-# centralwest_collection$find('{"date": {"$gte": {"$date":"2014-12-31T17:00:00Z"}}}')
+# centralwest_collection$find('{"date": {"$gte": {"$date":"2023-05-11T02:00:00Z"}}}')
 
 ```
 
