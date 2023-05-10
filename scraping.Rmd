@@ -339,15 +339,184 @@ if(
 
 ### Trial (backup in case for missing data of the past 24 hours)
 ```{r}
-## CentralWest
-# url <- "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration45fd.html?stationid=80"
-# doc <- read_html(url)
+# 1: CentralWestern (cwest): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration45fd.html?stationid=80"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration45fd.html?stationid=80")
+table_CW <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
 
-# table_CW <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
-# table_CW
+#cw_05102015 <- as.data.frame(table_CW)[c(1,2,3,4,6,7)]
+
+#for (i in 1:24){
+#  cw_05101930$Date.Time[i] <- paste0(strsplit(unlist(cw_05101930[1])[2], " ")
+#}
+
 ## order of pollutant when web scraping: NO2, O3, SO2, RSP(PM10), FSP(PM2.5)
 
+# 2: Kwai Chung (kc): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration30e8.html?stationid=72"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration30e8.html?stationid=72")
+table_KC <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#kc_05102015 <- as.data.frame(table_KC)[c(1,2,3,4,6,7)]
+
+# 3: Sham Shui Po (ssp): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationdb46.html?stationid=66"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationdb46.html?stationid=66")
+table_SSP <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#ssp_05102015 <- as.data.frame(table_SSP)[c(1,2,3,4,6,7)]
+
+# 4: Tai Po: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration6e9c.html?stationid=69"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration6e9c.html?stationid=69")
+table_TAIPO <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#taipo_05102015 <- as.data.frame(table_TAIPO)[c(1,2,3,4,6,7)]
+
+# 5: Tap Mun: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration537c.html?stationid=82" 
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration537c.html?stationid=82")
+table_TAPMUN <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#tapmun_05102015 <- as.data.frame(table_TAPMUN)[c(1,2,3,4,6,7)]
+
+# 6: Tsuen Wan (tw): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration228e.html?stationid=77"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration228e.html?stationid=77")
+table_TW <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#tw_05102015 <- as.data.frame(table_TW)[c(1,2,3,4,6,7)]
+
+# 7: Tung Chung (tc): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf322.html?stationid=78"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf322.html?stationid=78")
+table_TC <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#tc_05102015 <- as.data.frame(table_TC)[c(1,2,3,4,6,7)]
+
+# 8: Yuen Long (yl): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration1f2c.html?stationid=70"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration1f2c.html?stationid=70")
+table_YL <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#yl_05102015 <- as.data.frame(table_YL)[c(1,2,3,4,6,7)]
+
+# 9: roadside_Causeway Bay (cwb): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration5ca5.html?stationid=71"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration5ca5.html?stationid=71")
+table_CWB <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#cwb_05102015 <- as.data.frame(table_CWB)[c(1,2,3,4,6,7)]
+
+# 10: roadside_Central (cent): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf9dd.html?stationid=79"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf9dd.html?stationid=79")
+table_CENT <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#cent_05102015 <- as.data.frame(table_CENT)[c(1,2,3,4,6,7)]
+
+# 11: Sha Tin: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration2c5f.html?stationid=75"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration2c5f.html?stationid=75")
+table_SHATIN <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#shatin_05102015 <- as.data.frame(table_SHATIN)[c(1,2,3,4,6,7)]
+
+# 12: Kwun Tong (kt): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationfb71.html?stationid=74"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationfb71.html?stationid=74")
+table_KT <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#kt_05102015 <- as.data.frame(table_KT)[c(1,2,3,4,6,7)]
+
+# 13: Tseung Kwan O (tko): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration0b35.html?stationid=83"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration0b35.html?stationid=83")
+table_TKO <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#tko_05102015 <- as.data.frame(table_TKO)[c(1,2,3,4,6,7)]
+
+# 14: Easrtern (east): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentratione1a6.html?stationid=73"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentratione1a6.html?stationid=73")
+table_EAST <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#east_05102015 <- as.data.frame(table_EAST)[c(1,2,3,4,6,7)]
+
+# 15: roadside_Mong Kok (mk): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration9c57.html?stationid=81"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration9c57.html?stationid=81")
+table_MK <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#mk_05102015 <- as.data.frame(table_MK)[c(1,2,3,4,6,7)]
+
+# 16: Tuen Mun: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration233a.html?stationid=76"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration233a.html?stationid=76")
+table_TUENMUN <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#tuenmun_05102015 <- as.data.frame(table_TUENMUN)[c(1,2,3,4,6,7)]
+
+# 17: Southern (south): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationaf02.html?stationid=84"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationaf02.html?stationid=84")
+table_SOUTH <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#south_05102015 <- as.data.frame(table_SOUTH)[c(1,2,3,4,6,7)]
+
+# 18: North: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration084c.html?stationid=85"
+doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration084c.html?stationid=85")
+table_NORTH <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+
+#north_05102015 <- as.data.frame(table_NORTH)[c(1,2,3,4,6,7)]
+
 ```
+
+# Log
+```{r}
+# Check if log.rds exists
+
+if(file.exists("log.rds")) {
+  
+  # Read in current log and assign to `log`
+  
+  log <- readRDS("log.rds")
+  
+  # Capture the time
+  
+  last_run <- Sys.time()
+  
+  # Add a row to our one-column dataframe
+  # Assign it the value held in `last_run`
+  
+  log[nrow(log) + 1, 1] <- last_run
+  
+  saveRDS(log, file = "log.rds")
+  
+  
+} else {
+  
+  # This is case where "log.rds" doesn't exist
+  # So, we're starting a new log
+  
+  # Capture the time the script runs
+  
+  last_run <- Sys.time()
+  
+  # Create a dataframe that will be our log
+  
+  log <- data.frame(last_run)
+  
+  # Write to RDS file "log.rds"
+  
+  saveRDS(log, file =  "log.rds")
+  
+}
+```
+
+```{r}
+# 1: CentralWestern (cwest): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration45fd.html?stationid=80"
+# 2: Kwai Chung (kc): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration30e8.html?stationid=72"
+# 3: Sham Shui Po (ssp): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationdb46.html?stationid=66"
+# 4: Tai Po: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration6e9c.html?stationid=69"
+# 5: Tap Mun: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration537c.html?stationid=82" 
+# 6: Tsuen Wan (tw): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration228e.html?stationid=77"
+# 7: Tung Chung (tc): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf322.html?stationid=78"
+# 8: Yuen Long (yl): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration1f2c.html?stationid=70"
+# 9: roadside_Causeway Bay (cwb): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration5ca5.html?stationid=71"
+# 10: roadside_Central (cent): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf9dd.html?stationid=79"
+# 11: Sha Tin: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration2c5f.html?stationid=75"
+# 12: Kwun Tong (kt): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationfb71.html?stationid=74"
+# 13: Tseung Kwan O (tko): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration0b35.html?stationid=83"
+# 14: Easrtern (east): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentratione1a6.html?stationid=73"
+# 15: roadside_Mong Kok (mk): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration9c57.html?stationid=81"
+# 16: Tuen Mun: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration233a.html?stationid=76"
+# 17: Southern (south): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationaf02.html?stationid=84"
+# 18: North: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration084c.html?stationid=85"
+```   
 
 # draft
 ```{r}
@@ -356,7 +525,11 @@ if(
 # if(nrow(b) == 0){print("YES")}
 # table_time: 2023-05-09 20:00:00 GMT
 # paste0('{"field" : ', i, '}')
-```
+#require(taskscheduleR)
+#require(shiny)
+#require(miniUI)
+#taskschedulerAddin(RscriptRepository, debug = TRUE)
 
+```
 
 
