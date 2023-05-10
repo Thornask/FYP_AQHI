@@ -131,8 +131,8 @@ write_excel_csv(temp_all, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\clea
 
 # Set date to POSIX date (ISOdate), and add a column "HKTdate" for reference
 temp_all$date <- as.Date(temp_all$date, format = "%d/%m/%Y")
-## Remove the data before years 2014
-temp_all <- temp_all[as.numeric(format(temp_all$date, format = "%Y")) >= 2014, ]
+  ## Remove the data before years 2014
+  temp_all <- temp_all[as.numeric(format(temp_all$date, format = "%Y")) >= 2014, ]
 temp_all$date <- ISOdate(temp_all$date, as.numeric(temp_all$hour),0,0)
 temp_all <- subset(temp_all, select = -hour)
 # Change the "N.A." value to null
@@ -194,7 +194,7 @@ write_excel_csv(YuenLong, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\clea
 # rm(CentralWest, Eastern, KwaiChung, KwunTong, North, roadside_CausewayBay, roadside_Central, roadside_MongKok, ShamShuiPo, ShaTin, Southern, TaiPo, TapMun, TseungKwanO, TsuenWan, TuenMun, TungChung, YuenLong)
 ```
 
-# subset sample data from station
+# subset sample data from station (archieved)
 ```{r}
 # filter the data from one of the station
 # sel_name <- "CentralWest"
@@ -209,7 +209,17 @@ write_excel_csv(YuenLong, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\clea
 
 ```
 
+# mongodb accessing (testing) (archieved)
+```{r}
+# install.packages("mongolite")
+# require(mongolite)
 
+# connection_string <- 'mongodb+srv://Thornask:hassiumquasar@cluster0.neeez8b.mongodb.net/test'
+# centralwest_collection <- mongo(collection="CentralWest", db="dbTseries", url=connection_string)
+# centralwest_collection$count()
+# centralwest_collection$find('{"date": {"$gte": {"$date":"2014-12-31T17:00:00Z"}}}')
+
+```
 
 # note:
 ```{r}

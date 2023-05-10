@@ -1,0 +1,362 @@
+# requiring 
+```{r}
+# install.packages("tidyverse")
+require("tidyverse")
+require("readr")
+require(zoo)
+```
+
+# scraping
+```{r}
+# install.packages("rvest")
+require(rvest)
+
+## Scraping
+doc2 <- read_html("https://www.aqhi.gov.hk/en.html")
+
+# current dateTime: table_time
+text_time <- html_elements(doc2, xpath="//*[@id='tblCurrAQHI']/tbody/tr[2]/td[1]") %>% html_text() %>% strsplit(" ")
+temp_date <- strsplit(text_time[[1]][2], "-")
+temp_time <- strsplit(text_time[[1]][1], ":")
+
+table_time <- ISOdate(as.numeric(temp_date[[1]][3]), as.numeric(temp_date[[1]][2]), as.numeric(temp_date[[1]][1]), as.numeric(temp_time[[1]][1]), as.numeric(temp_time[[1]][2]), 0)
+
+### pollutant concentration
+table_test <- html_elements(doc2, xpath = "//*[contains(@class, 'cMapPopup ui-corner-all')]/table") %>% html_table()
+
+## (The sequence of pollutant and the place are too messy such that hard-coding may be easier to process)
+
+# NO2:        table_test[[1]][4,1:2]
+# FSP(PM2.5): table_test[[1]][4,3:4]
+# SO2:        table_test[[1]][5,1:2]
+# RSP(PM10):  table_test[[1]][5,3:4]
+# O3:         table_test[[1]][6,1:2]
+
+# table_test[[x]] -> x:
+# 1: CentralWestern (cwest) 
+cwest_NO2 <- as.numeric(table_test[[1]][4,2])
+cwest_FSP <- as.numeric(table_test[[1]][4,4])
+cwest_SO2 <- as.numeric(table_test[[1]][5,2])
+cwest_RSP <- as.numeric(table_test[[1]][5,4])
+cwest_O3  <- as.numeric(table_test[[1]][6,2])
+# 2: Kwai Chung (kc)
+kc_NO2 <- as.numeric(table_test[[2]][4,2])
+kc_FSP <- as.numeric(table_test[[2]][4,4])
+kc_SO2 <- as.numeric(table_test[[2]][5,2])
+kc_RSP <- as.numeric(table_test[[2]][5,4])
+kc_O3  <- as.numeric(table_test[[2]][6,2])
+# 3: Sham Shui Po (ssp)
+ssp_NO2 <- as.numeric(table_test[[3]][4,2])
+ssp_FSP <- as.numeric(table_test[[3]][4,4])
+ssp_SO2 <- as.numeric(table_test[[3]][5,2])
+ssp_RSP <- as.numeric(table_test[[3]][5,4])
+ssp_O3  <- as.numeric(table_test[[3]][6,2])
+# 4: Tai Po 
+taipo_NO2 <- as.numeric(table_test[[4]][4,2])
+taipo_FSP <- as.numeric(table_test[[4]][4,4])
+taipo_SO2 <- as.numeric(table_test[[4]][5,2])
+taipo_RSP <- as.numeric(table_test[[4]][5,4])
+taipo_O3  <- as.numeric(table_test[[4]][6,2])
+# 5: Tap Mun 
+tapmun_NO2 <- as.numeric(table_test[[5]][4,2])
+tapmun_FSP <- as.numeric(table_test[[5]][4,4])
+tapmun_SO2 <- as.numeric(table_test[[5]][5,2])
+tapmun_RSP <- as.numeric(table_test[[5]][5,4])
+tapmun_O3  <- as.numeric(table_test[[5]][6,2])
+# 6: Tsuen Wan (tw)
+tw_NO2 <- as.numeric(table_test[[6]][4,2])
+tw_FSP <- as.numeric(table_test[[6]][4,4])
+tw_SO2 <- as.numeric(table_test[[6]][5,2])
+tw_RSP <- as.numeric(table_test[[6]][5,4])
+tw_O3  <- as.numeric(table_test[[6]][6,2])
+# 7: Tung Chung (tc)
+tc_NO2 <- as.numeric(table_test[[7]][4,2])
+tc_FSP <- as.numeric(table_test[[7]][4,4])
+tc_SO2 <- as.numeric(table_test[[7]][5,2])
+tc_RSP <- as.numeric(table_test[[7]][5,4])
+tc_O3  <- as.numeric(table_test[[7]][6,2])
+# 8: Yuen Long (yl)
+yl_NO2 <- as.numeric(table_test[[8]][4,2])
+yl_FSP <- as.numeric(table_test[[8]][4,4])
+yl_SO2 <- as.numeric(table_test[[8]][5,2])
+yl_RSP <- as.numeric(table_test[[8]][5,4])
+yl_O3  <- as.numeric(table_test[[8]][6,2])
+# 9: roadside_Causeway Bay (cwb)
+cwb_NO2 <- as.numeric(table_test[[9]][4,2])
+cwb_FSP <- as.numeric(table_test[[9]][4,4])
+cwb_SO2 <- as.numeric(table_test[[9]][5,2])
+cwb_RSP <- as.numeric(table_test[[9]][5,4])
+cwb_O3  <- as.numeric(table_test[[9]][6,2])
+# 10: roadside_Central (cent)
+cent_NO2 <- as.numeric(table_test[[10]][4,2])
+cent_FSP <- as.numeric(table_test[[10]][4,4])
+cent_SO2 <- as.numeric(table_test[[10]][5,2])
+cent_RSP <- as.numeric(table_test[[10]][5,4])
+cent_O3  <- as.numeric(table_test[[10]][6,2])
+# 11: Sha Tin 
+shatin_NO2 <- as.numeric(table_test[[11]][4,2])
+shatin_FSP <- as.numeric(table_test[[11]][4,4])
+shatin_SO2 <- as.numeric(table_test[[11]][5,2])
+shatin_RSP <- as.numeric(table_test[[11]][5,4])
+shatin_O3  <- as.numeric(table_test[[11]][6,2])
+# 12: Kwun Tong (kt)
+kt_NO2 <- as.numeric(table_test[[12]][4,2])
+kt_FSP <- as.numeric(table_test[[12]][4,4])
+kt_SO2 <- as.numeric(table_test[[12]][5,2])
+kt_RSP <- as.numeric(table_test[[12]][5,4])
+kt_O3  <- as.numeric(table_test[[12]][6,2])
+# 13: Tseung Kwan O (tko)
+tko_NO2 <- as.numeric(table_test[[13]][4,2])
+tko_FSP <- as.numeric(table_test[[13]][4,4])
+tko_SO2 <- as.numeric(table_test[[13]][5,2])
+tko_RSP <- as.numeric(table_test[[13]][5,4])
+tko_O3  <- as.numeric(table_test[[13]][6,2])
+# 14: Easrtern (east)
+east_NO2 <- as.numeric(table_test[[14]][4,2])
+east_FSP <- as.numeric(table_test[[14]][4,4])
+east_SO2 <- as.numeric(table_test[[14]][5,2])
+east_RSP <- as.numeric(table_test[[14]][5,4])
+east_O3  <- as.numeric(table_test[[14]][6,2])
+# 15: roadside_Mong Kok (mk)
+mk_NO2 <- as.numeric(table_test[[15]][4,2])
+mk_FSP <- as.numeric(table_test[[15]][4,4])
+mk_SO2 <- as.numeric(table_test[[15]][5,2])
+mk_RSP <- as.numeric(table_test[[15]][5,4])
+mk_O3  <- as.numeric(table_test[[15]][6,2])
+# 16: Tuen Mun 
+tuenmun_NO2 <- as.numeric(table_test[[16]][4,2])
+tuenmun_FSP <- as.numeric(table_test[[16]][4,4])
+tuenmun_SO2 <- as.numeric(table_test[[16]][5,2])
+tuenmun_RSP <- as.numeric(table_test[[16]][5,4])
+tuenmun_O3  <- as.numeric(table_test[[16]][6,2])
+# 17: Southern (south)
+south_NO2 <- as.numeric(table_test[[17]][4,2])
+south_FSP <- as.numeric(table_test[[17]][4,4])
+south_SO2 <- as.numeric(table_test[[17]][5,2])
+south_RSP <- as.numeric(table_test[[17]][5,4])
+south_O3  <- as.numeric(table_test[[17]][6,2])
+# 18: North
+north_NO2 <- as.numeric(table_test[[18]][4,2])
+north_FSP <- as.numeric(table_test[[18]][4,4])
+north_SO2 <- as.numeric(table_test[[18]][5,2])
+north_RSP <- as.numeric(table_test[[18]][5,4])
+north_O3  <- as.numeric(table_test[[18]][6,2])
+
+```
+
+# mongodb accessing
+```{r}
+# (make the current time format match for using in mongolite) 
+  temp_timestamp <- strsplit(as.character(table_time), " ")
+  timestamp <- paste0(temp_timestamp[[1]][1], "T", temp_timestamp[[1]][2], "Z")
+
+# install.packages("mongolite")
+require(mongolite)
+
+connection_string <- 'mongodb+srv://Thornask:hassiumquasar@cluster0.neeez8b.mongodb.net/test'
+
+# 1: CentralWestern (cwest)
+centralwest_collection <- mongo(collection="CentralWest", db="dbTseries", url=connection_string)
+if(
+  nrow( centralwest_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', cwest_NO2, '", "FSP": "', cwest_FSP, '", "SO2": "', 
+         cwest_SO2, '", "RSP": "', cwest_RSP, '", "O3": "', cwest_O3, '", "station": "CentralWest"}' )
+  centralwest_collection$insert(str)
+}
+
+# 2: Kwai Chung (kc)
+kwaichung_collection <- mongo(collection="KwaiChung", db="dbTseries", url=connection_string)
+if(
+  nrow( kwaichung_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', kc_NO2, '", "FSP": "', kc_FSP, '", "SO2": "', 
+         kc_SO2, '", "RSP": "', kc_RSP, '", "O3": "', kc_O3, '", "station": "KwaiChung"}' )
+  kwaichung_collection$insert(str)
+}
+
+# 3: Sham Shui Po (ssp)
+shamshuipo_collection <- mongo(collection="ShamShuiPo", db="dbTseries", url=connection_string)
+if(
+  nrow( shamshuipo_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', ssp_NO2, '", "FSP": "', ssp_FSP, '", "SO2": "', 
+         ssp_SO2, '", "RSP": "', ssp_RSP, '", "O3": "', ssp_O3, '", "station": "ShamShuiPo"}' )
+  shamshuipo_collection$insert(str)
+}
+
+# 4: Tai Po 
+taipo_collection <- mongo(collection="TaiPo", db="dbTseries", url=connection_string)
+if(
+  nrow( taipo_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', taipo_NO2, '", "FSP": "', taipo_FSP, '", "SO2": "', 
+         taipo_SO2, '", "RSP": "', taipo_RSP, '", "O3": "', taipo_O3, '", "station": "TaiPo"}' )
+  taipo_collection$insert(str)
+}
+
+# 5: Tap Mun 
+tapmun_collection <- mongo(collection="TapMun", db="dbTseries", url=connection_string)
+if(
+  nrow( tapmun_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', tapmun_NO2, '", "FSP": "', tapmun_FSP, '", "SO2": "', 
+         tapmun_SO2, '", "RSP": "', tapmun_RSP, '", "O3": "', tapmun_O3, '", "station": "TapMun"}' )
+  tapmun_collection$insert(str)
+}
+
+# 6: Tsuen Wan (tw)
+tsuenwan_collection <- mongo(collection="TsuenWan", db="dbTseries", url=connection_string)
+if(
+  nrow( tsuenwan_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', tw_NO2, '", "FSP": "', tw_FSP, '", "SO2": "', 
+         tw_SO2, '", "RSP": "', tw_RSP, '", "O3": "', tw_O3, '", "station": "TsuenWan"}' )
+  tsuenwan_collection$insert(str)
+}
+
+# 7: Tung Chung (tc)
+tungchung_collection <- mongo(collection="TungChung", db="dbTseries", url=connection_string)
+if(
+  nrow( tungchung_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', tc_NO2, '", "FSP": "', tc_FSP, '", "SO2": "', 
+         tc_SO2, '", "RSP": "', tc_RSP, '", "O3": "', tc_O3, '", "station": "TungChung"}' )
+  tungchung_collection$insert(str)
+}
+
+# 8: Yuen Long (yl)
+yuenlong_collection <- mongo(collection="YuenLong", db="dbTseries", url=connection_string)
+if(
+  nrow( yuenlong_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', yl_NO2, '", "FSP": "', yl_FSP, '", "SO2": "', 
+         yl_SO2, '", "RSP": "', yl_RSP, '", "O3": "', yl_O3, '", "station": "YuenLong"}' )
+  yuenlong_collection$insert(str)
+}
+
+# 9: roadside_CausewayBay (cwb)
+causewaybay_collection <- mongo(collection="roadside_CausewayBay", db="dbTseries", url=connection_string)
+if(
+  nrow( causewaybay_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', cwb_NO2, '", "FSP": "', cwb_FSP, '", "SO2": "', 
+         cwb_SO2, '", "RSP": "', cwb_RSP, '", "O3": "', cwb_O3, '", "station": "roadside_CausewayBay"}' )
+  causewaybay_collection$insert(str)
+}
+
+# 10: roadside_Central (cent)
+central_collection <- mongo(collection="roadside_Central", db="dbTseries", url=connection_string)
+if(
+  nrow( central_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', cent_NO2, '", "FSP": "', cent_FSP, '", "SO2": "', 
+         cent_SO2, '", "RSP": "', cent_RSP, '", "O3": "', cent_O3, '", "station": "roadside_Central"}' )
+  central_collection$insert(str)
+}
+
+# 11: Sha Tin 
+shatin_collection <- mongo(collection="ShaTin", db="dbTseries", url=connection_string)
+if(
+  nrow( shatin_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', shatin_NO2, '", "FSP": "', shatin_FSP, '", "SO2": "', 
+         shatin_SO2, '", "RSP": "', shatin_RSP, '", "O3": "', shatin_O3, '", "station": "ShaTin"}' )
+  shatin_collection$insert(str)
+}
+
+# 12: Kwun Tong (kt)
+kwuntong_collection <- mongo(collection="KwunTong", db="dbTseries", url=connection_string)
+if(
+  nrow( kwuntong_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', kt_NO2, '", "FSP": "', kt_FSP, '", "SO2": "', 
+         kt_SO2, '", "RSP": "', kt_RSP, '", "O3": "', kt_O3, '", "station": "KwunTong"}' )
+  kwuntong_collection$insert(str)
+}
+
+# 13: Tseung Kwan O (tko)
+tseungkwano_collection <- mongo(collection="TseungKwanO", db="dbTseries", url=connection_string)
+if(
+  nrow( tseungkwano_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', tko_NO2, '", "FSP": "', tko_FSP, '", "SO2": "', 
+         tko_SO2, '", "RSP": "', tko_RSP, '", "O3": "',tko_O3, '", "station": "TseungKwanO"}' )
+  tseungkwano_collection$insert(str)
+}
+
+# 14: Easrtern (east)
+eastern_collection <- mongo(collection="Easrtern", db="dbTseries", url=connection_string)
+if(
+  nrow( eastern_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', east_NO2, '", "FSP": "', east_FSP, '", "SO2": "', 
+         east_SO2, '", "RSP": "', east_RSP, '", "O3": "', east_O3, '", "station": "Easrtern"}' )
+  eastern_collection$insert(str)
+}
+
+# 15: roadside_MongKok (mk)
+mongkok_collection <- mongo(collection="roadside_MongKok", db="dbTseries", url=connection_string)
+if(
+  nrow( mongkok_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', mk_NO2, '", "FSP": "', mk_FSP, '", "SO2": "', 
+         mk_SO2, '", "RSP": "', mk_RSP, '", "O3": "', mk_O3, '", "station": "roadside_MongKok"}' )
+  mongkok_collection$insert(str)
+}
+
+# 16: Tuen Mun 
+tuenmun_collection <- mongo(collection="TuenMun", db="dbTseries", url=connection_string)
+if(
+  nrow( tuenmun_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', tuenmun_NO2, '", "FSP": "', tuenmun_FSP, '", "SO2": "', 
+         tuenmun_SO2, '", "RSP": "', tuenmun_RSP, '", "O3": "', tuenmun_O3, '", "station": "TuenMun"}' )
+  tuenmun_collection$insert(str)
+}
+
+# 17: Southern (south)
+southern_collection <- mongo(collection="Southern", db="dbTseries", url=connection_string)
+if(
+  nrow( southern_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', south_NO2, '", "FSP": "', south_FSP, '", "SO2": "', 
+         south_SO2, '", "RSP": "', south_RSP, '", "O3": "', south_O3, '", "station": "Southern"}' )
+  southern_collection$insert(str)
+}
+
+# 18: North
+north_collection <- mongo(collection="North", db="dbTseries", url=connection_string)
+if(
+  nrow( north_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
+        ) == 0){
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', north_NO2, '", "FSP": "', north_FSP, '", "SO2": "', 
+         north_SO2, '", "RSP": "', north_RSP, '", "O3": "', north_O3, '", "station": "North"}' )
+  north_collection$insert(str)
+}
+
+```
+
+### Trial (backup in case for missing data of the past 24 hours)
+```{r}
+## CentralWest
+# url <- "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration45fd.html?stationid=80"
+# doc <- read_html(url)
+
+# table_CW <- html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table()
+# table_CW
+## order of pollutant when web scraping: NO2, O3, SO2, RSP(PM10), FSP(PM2.5)
+
+```
+
+# draft
+```{r}
+# check error: mydata <- jsonlite::fromJSON(str)
+# b <- centralwest_collection$find('{"date": {"$gte": {"$date":"2014-12-31T17:00:00Z"}}}')
+# if(nrow(b) == 0){print("YES")}
+# table_time: 2023-05-09 20:00:00 GMT
+# paste0('{"field" : ', i, '}')
+```
+
+
+

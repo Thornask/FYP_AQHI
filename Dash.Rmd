@@ -1,7 +1,7 @@
 # requiring
 ```{r}
-# install.packages("remotes")
-# remotes::install_github("plotly/dashR", upgrade = "always")
+install.packages("remotes")
+remotes::install_github("plotly/dashR", upgrade = "always")
 require(dash)
 # install.packages("dashCoreComponents")
 require(dashCoreComponents)
