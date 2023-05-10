@@ -24,9 +24,9 @@ table_time <- ISOdate(as.numeric(temp_date[[1]][3]), as.numeric(temp_date[[1]][2
 # (make the current time format match for using in mongolite) 
 temp_timestamp <- strsplit(as.character(table_time), " ")
 if(is.na(temp_timestamp[[1]][2])){
-  timestamp <<- paste0(temp_timestamp[[1]][1], "T00:00:00Z")
+  timestamp <- paste0(temp_timestamp[[1]][1], "T00:00:00Z")
   } else{
-  timestamp <<- paste0(temp_timestamp[[1]][1], "T", temp_timestamp[[1]][2], "Z")
+  timestamp <- paste0(temp_timestamp[[1]][1], "T", temp_timestamp[[1]][2], "Z")
 }
 ### pollutant concentration
 table_test <- html_elements(doc2, xpath = "//*[contains(@class, 'cMapPopup ui-corner-all')]/table") %>% html_table()
