@@ -58,8 +58,8 @@ if(
   cwest_SO2 <- as.numeric(table_test[[1]][5,2])
   cwest_RSP <- as.numeric(table_test[[1]][5,4])
   cwest_O3  <- as.numeric(table_test[[1]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', cwest_NO2, '", "FSP": "', cwest_FSP, '", "SO2": "', 
-                cwest_SO2, '", "RSP": "', cwest_RSP, '", "O3": "', cwest_O3, '", "station": "CentralWest"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', cwest_NO2, ', "FSP": ', cwest_FSP, ', "SO2": ', 
+                cwest_SO2, ', "RSP": ', cwest_RSP, ', "O3": ', cwest_O3, ', "station": "CentralWest"}' )
   centralwest_collection$insert(str)
 }
 
@@ -73,8 +73,8 @@ if(
   kc_SO2 <- as.numeric(table_test[[2]][5,2])
   kc_RSP <- as.numeric(table_test[[2]][5,4])
   kc_O3  <- as.numeric(table_test[[2]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', kc_NO2, '", "FSP": "', kc_FSP, '", "SO2": "', 
-                kc_SO2, '", "RSP": "', kc_RSP, '", "O3": "', kc_O3, '", "station": "KwaiChung"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', kc_NO2, ', "FSP": ', kc_FSP, ', "SO2": ', 
+                kc_SO2, ', "RSP": ', kc_RSP, ', "O3": ', kc_O3, ', "station": "KwaiChung"}' )
   kwaichung_collection$insert(str)
 }
 
@@ -88,8 +88,8 @@ if(
   ssp_SO2 <- as.numeric(table_test[[3]][5,2])
   ssp_RSP <- as.numeric(table_test[[3]][5,4])
   ssp_O3  <- as.numeric(table_test[[3]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', ssp_NO2, '", "FSP": "', ssp_FSP, '", "SO2": "', 
-                ssp_SO2, '", "RSP": "', ssp_RSP, '", "O3": "', ssp_O3, '", "station": "ShamShuiPo"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', ssp_NO2, ', "FSP": ', ssp_FSP, ', "SO2": ', 
+                ssp_SO2, ', "RSP": ', ssp_RSP, ', "O3": ', ssp_O3, ', "station": "ShamShuiPo"}' )
   shamshuipo_collection$insert(str)
 }
 
@@ -103,8 +103,8 @@ if(
   taipo_SO2 <- as.numeric(table_test[[4]][5,2])
   taipo_RSP <- as.numeric(table_test[[4]][5,4])
   taipo_O3  <- as.numeric(table_test[[4]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', taipo_NO2, '", "FSP": "', taipo_FSP, '", "SO2": "', 
-                taipo_SO2, '", "RSP": "', taipo_RSP, '", "O3": "', taipo_O3, '", "station": "TaiPo"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', taipo_NO2, ', "FSP": ', taipo_FSP, ', "SO2": ', 
+                taipo_SO2, ', "RSP": ', taipo_RSP, ', "O3": ', taipo_O3, ', "station": "TaiPo"}' )
   taipo_collection$insert(str)
 }
 
@@ -118,8 +118,8 @@ if(
   tapmun_SO2 <- as.numeric(table_test[[5]][5,2])
   tapmun_RSP <- as.numeric(table_test[[5]][5,4])
   tapmun_O3  <- as.numeric(table_test[[5]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', tapmun_NO2, '", "FSP": "', tapmun_FSP, '", "SO2": "', 
-                tapmun_SO2, '", "RSP": "', tapmun_RSP, '", "O3": "', tapmun_O3, '", "station": "TapMun"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', tapmun_NO2, ', "FSP": ', tapmun_FSP, ', "SO2": ', 
+                tapmun_SO2, ', "RSP": ', tapmun_RSP, ', "O3": ', tapmun_O3, ', "station": "TapMun"}' )
   tapmun_collection$insert(str)
 }
 
@@ -133,8 +133,8 @@ if(
   tw_SO2 <- as.numeric(table_test[[6]][5,2])
   tw_RSP <- as.numeric(table_test[[6]][5,4])
   tw_O3  <- as.numeric(table_test[[6]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', tw_NO2, '", "FSP": "', tw_FSP, '", "SO2": "', 
-                tw_SO2, '", "RSP": "', tw_RSP, '", "O3": "', tw_O3, '", "station": "TsuenWan"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', tw_NO2, ', "FSP": ', tw_FSP, ', "SO2": ', 
+                tw_SO2, ', "RSP": ', tw_RSP, ', "O3": ', tw_O3, ', "station": "TsuenWan"}' )
   tsuenwan_collection$insert(str)
 }
 
@@ -148,8 +148,8 @@ if(
   tc_SO2 <- as.numeric(table_test[[7]][5,2])
   tc_RSP <- as.numeric(table_test[[7]][5,4])
   tc_O3  <- as.numeric(table_test[[7]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', tc_NO2, '", "FSP": "', tc_FSP, '", "SO2": "', 
-                tc_SO2, '", "RSP": "', tc_RSP, '", "O3": "', tc_O3, '", "station": "TungChung"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', tc_NO2, ', "FSP": ', tc_FSP, ', "SO2": ', 
+                tc_SO2, ', "RSP": ', tc_RSP, ', "O3": ', tc_O3, ', "station": "TungChung"}' )
   tungchung_collection$insert(str)
 }
 
@@ -163,8 +163,8 @@ if(
   yl_SO2 <- as.numeric(table_test[[8]][5,2])
   yl_RSP <- as.numeric(table_test[[8]][5,4])
   yl_O3  <- as.numeric(table_test[[8]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', yl_NO2, '", "FSP": "', yl_FSP, '", "SO2": "', 
-                yl_SO2, '", "RSP": "', yl_RSP, '", "O3": "', yl_O3, '", "station": "YuenLong"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', yl_NO2, ', "FSP": ', yl_FSP, ', "SO2": ', 
+                yl_SO2, ', "RSP": ', yl_RSP, ', "O3": ', yl_O3, ', "station": "YuenLong"}' )
   yuenlong_collection$insert(str)
 }
 
@@ -178,8 +178,8 @@ if(
   cwb_SO2 <- as.numeric(table_test[[9]][5,2])
   cwb_RSP <- as.numeric(table_test[[9]][5,4])
   cwb_O3  <- as.numeric(table_test[[9]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', cwb_NO2, '", "FSP": "', cwb_FSP, '", "SO2": "', 
-                cwb_SO2, '", "RSP": "', cwb_RSP, '", "O3": "', cwb_O3, '", "station": "roadside_CausewayBay"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', cwb_NO2, ', "FSP": ', cwb_FSP, ', "SO2": ', 
+                cwb_SO2, ', "RSP": ', cwb_RSP, ', "O3": ', cwb_O3, ', "station": "roadside_CausewayBay"}' )
   causewaybay_collection$insert(str)
 }
 
@@ -193,8 +193,8 @@ if(
   cent_SO2 <- as.numeric(table_test[[10]][5,2])
   cent_RSP <- as.numeric(table_test[[10]][5,4])
   cent_O3  <- as.numeric(table_test[[10]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', cent_NO2, '", "FSP": "', cent_FSP, '", "SO2": "', 
-                cent_SO2, '", "RSP": "', cent_RSP, '", "O3": "', cent_O3, '", "station": "roadside_Central"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', cent_NO2, ', "FSP": ', cent_FSP, ', "SO2": ', 
+                cent_SO2, ', "RSP": ', cent_RSP, ', "O3": ', cent_O3, ', "station": "roadside_Central"}' )
   central_collection$insert(str)
 }
 
@@ -208,8 +208,8 @@ if(
   shatin_SO2 <- as.numeric(table_test[[11]][5,2])
   shatin_RSP <- as.numeric(table_test[[11]][5,4])
   shatin_O3  <- as.numeric(table_test[[11]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', shatin_NO2, '", "FSP": "', shatin_FSP, '", "SO2": "', 
-                shatin_SO2, '", "RSP": "', shatin_RSP, '", "O3": "', shatin_O3, '", "station": "ShaTin"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', shatin_NO2, ', "FSP": ', shatin_FSP, ', "SO2": ', 
+                shatin_SO2, ', "RSP": ', shatin_RSP, ', "O3": ', shatin_O3, ', "station": "ShaTin"}' )
   shatin_collection$insert(str)
 }
 
@@ -223,8 +223,8 @@ if(
   kt_SO2 <- as.numeric(table_test[[12]][5,2])
   kt_RSP <- as.numeric(table_test[[12]][5,4])
   kt_O3  <- as.numeric(table_test[[12]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', kt_NO2, '", "FSP": "', kt_FSP, '", "SO2": "', 
-                kt_SO2, '", "RSP": "', kt_RSP, '", "O3": "', kt_O3, '", "station": "KwunTong"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', kt_NO2, ', "FSP": ', kt_FSP, ', "SO2": ', 
+                kt_SO2, ', "RSP": ', kt_RSP, ', "O3": ', kt_O3, ', "station": "KwunTong"}' )
   kwuntong_collection$insert(str)
 }
 
@@ -238,8 +238,8 @@ if(
   tko_SO2 <- as.numeric(table_test[[13]][5,2])
   tko_RSP <- as.numeric(table_test[[13]][5,4])
   tko_O3  <- as.numeric(table_test[[13]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', tko_NO2, '", "FSP": "', tko_FSP, '", "SO2": "', 
-                tko_SO2, '", "RSP": "', tko_RSP, '", "O3": "',tko_O3, '", "station": "TseungKwanO"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', tko_NO2, ', "FSP": ', tko_FSP, ', "SO2": ', 
+                tko_SO2, ', "RSP": ', tko_RSP, ', "O3": ',tko_O3, ', "station": "TseungKwanO"}' )
   tseungkwano_collection$insert(str)
 }
 
@@ -253,8 +253,8 @@ if(
   east_SO2 <- as.numeric(table_test[[14]][5,2])
   east_RSP <- as.numeric(table_test[[14]][5,4])
   east_O3  <- as.numeric(table_test[[14]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', east_NO2, '", "FSP": "', east_FSP, '", "SO2": "', 
-                east_SO2, '", "RSP": "', east_RSP, '", "O3": "', east_O3, '", "station": "Eastern"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', east_NO2, ', "FSP": ', east_FSP, ', "SO2": ', 
+                east_SO2, ', "RSP": ', east_RSP, ', "O3": ', east_O3, ', "station": "Eastern"}' )
   eastern_collection$insert(str)
 }
 
@@ -268,8 +268,8 @@ if(
   mk_SO2 <- as.numeric(table_test[[15]][5,2])
   mk_RSP <- as.numeric(table_test[[15]][5,4])
   mk_O3  <- as.numeric(table_test[[15]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', mk_NO2, '", "FSP": "', mk_FSP, '", "SO2": "', 
-                mk_SO2, '", "RSP": "', mk_RSP, '", "O3": "', mk_O3, '", "station": "roadside_MongKok"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', mk_NO2, ', "FSP": ', mk_FSP, ', "SO2": ', 
+                mk_SO2, ', "RSP": ', mk_RSP, ', "O3": ', mk_O3, ', "station": "roadside_MongKok"}' )
   mongkok_collection$insert(str)
 }
 
@@ -283,8 +283,8 @@ if(
   tuenmun_SO2 <- as.numeric(table_test[[16]][5,2])
   tuenmun_RSP <- as.numeric(table_test[[16]][5,4])
   tuenmun_O3  <- as.numeric(table_test[[16]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', tuenmun_NO2, '", "FSP": "', tuenmun_FSP, '", "SO2": "', 
-                tuenmun_SO2, '", "RSP": "', tuenmun_RSP, '", "O3": "', tuenmun_O3, '", "station": "TuenMun"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', tuenmun_NO2, ', "FSP": ', tuenmun_FSP, ', "SO2": ', 
+                tuenmun_SO2, ', "RSP": ', tuenmun_RSP, ', "O3": ', tuenmun_O3, ', "station": "TuenMun"}' )
   tuenmun_collection$insert(str)
 }
 
@@ -298,8 +298,8 @@ if(
   south_SO2 <- as.numeric(table_test[[17]][5,2])
   south_RSP <- as.numeric(table_test[[17]][5,4])
   south_O3  <- as.numeric(table_test[[17]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', south_NO2, '", "FSP": "', south_FSP, '", "SO2": "', 
-                south_SO2, '", "RSP": "', south_RSP, '", "O3": "', south_O3, '", "station": "Southern"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', south_NO2, ', "FSP": ', south_FSP, ', "SO2": ', 
+                south_SO2, ', "RSP": ', south_RSP, ', "O3": ', south_O3, ', "station": "Southern"}' )
   southern_collection$insert(str)
 }
 
@@ -313,8 +313,8 @@ if(
   north_SO2 <- as.numeric(table_test[[18]][5,2])
   north_RSP <- as.numeric(table_test[[18]][5,4])
   north_O3  <- as.numeric(table_test[[18]][6,2])
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": "', north_NO2, '", "FSP": "', north_FSP, '", "SO2": "', 
-                north_SO2, '", "RSP": "', north_RSP, '", "O3": "', north_O3, '", "station": "North"}' )
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', north_NO2, ', "FSP": ', north_FSP, ', "SO2": ', 
+                north_SO2, ', "RSP": ', north_RSP, ', "O3": ', north_O3, ', "station": "North"}' )
   north_collection$insert(str)
 }
 
