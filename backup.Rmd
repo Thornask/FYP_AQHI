@@ -1,0 +1,284 @@
+---
+title: "backup"
+output: html_document
+date: "2023-05-11"
+---
+# requiring
+
+```{r}
+# install.packages("tidyverse")
+require("tidyverse")
+require("readr")
+require(zoo)
+```
+
+# (backup in case for missing data of the past 24 hours)
+```{r}
+## (order of pollutant when web scraping: NO2, O3, SO2, RSP(PM10), FSP(PM2.5))
+# til to: 2023-05-11 15:00
+
+## 1: CentralWestern (cwest): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration45fd.html?stationid=80"
+# ----
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration45fd.html?stationid=80")
+# scrap_CW <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_CW <- scrap_CW
+table_CW$station <- 'CentralWest'
+table_CW[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_CW[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_CW) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_CW$NO2 <- as.numeric(table_CW$NO2)
+table_CW$SO2 <- as.numeric(table_CW$SO2)
+table_CW$O3 <- as.numeric(table_CW$O3)
+table_CW$RSP <- as.numeric(table_CW$RSP)
+table_CW$FSP <- as.numeric(table_CW$FSP)
+temp_all <- rbind(temp_all, table_CW)
+
+# 2: Kwai Chung (kc): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration30e8.html?stationid=72"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration30e8.html?stationid=72")
+# scrap_KC <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_KC <- scrap_KC
+table_KC$station <- 'KwaiChung'
+table_KC[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_KC[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_KC) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_KC$NO2 <- as.numeric(table_KC$NO2)
+table_KC$SO2 <- as.numeric(table_KC$SO2)
+table_KC$O3 <- as.numeric(table_KC$O3)
+table_KC$RSP <- as.numeric(table_KC$RSP)
+table_KC$FSP <- as.numeric(table_KC$FSP)
+
+temp_KC <- table_KC
+temp_KC <- na.locf(temp_KC, fromLast = TRUE)
+temp_all <- rbind(temp_all, temp_KC)
+
+# 3: Sham Shui Po (ssp): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationdb46.html?stationid=66"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationdb46.html?stationid=66")
+# scrap_SSP <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_SSP <- scrap_SSP
+table_SSP$station <- 'ShamShuiPo'
+table_SSP[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_SSP[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_SSP) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_SSP$NO2 <- as.numeric(table_SSP$NO2)
+table_SSP$SO2 <- as.numeric(table_SSP$SO2)
+table_SSP$O3 <- as.numeric(table_SSP$O3)
+table_SSP$RSP <- as.numeric(table_SSP$RSP)
+table_SSP$FSP <- as.numeric(table_SSP$FSP)
+temp_all <- rbind(temp_all, table_SSP)
+
+# 4: Tai Po: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration6e9c.html?stationid=69"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration6e9c.html?stationid=69")
+# scrap_TAIPO <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_TAIPO <- scrap_TAIPO
+table_TAIPO$station <- 'TaiPo'
+table_TAIPO[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_TAIPO[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_TAIPO) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_TAIPO$NO2 <- as.numeric(table_TAIPO$NO2)
+table_TAIPO$SO2 <- as.numeric(table_TAIPO$SO2)
+table_TAIPO$O3 <- as.numeric(table_TAIPO$O3)
+table_TAIPO$RSP <- as.numeric(table_TAIPO$RSP)
+table_TAIPO$FSP <- as.numeric(table_TAIPO$FSP)
+
+temp_TAIPO <- table_TAIPO
+temp_TAIPO <- na.locf(temp_TAIPO, fromLast = TRUE)
+temp_all <- rbind(temp_all, temp_TAIPO)
+
+# 5: Tap Mun: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration537c.html?stationid=82" 
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration537c.html?stationid=82")
+# scrap_TAPMUN <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_TAPMUN <- scrap_TAPMUN
+table_TAPMUN$station <- 'TapMun'
+table_TAPMUN[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_TAPMUN[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_TAPMUN) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_TAPMUN$NO2 <- as.numeric(table_TAPMUN$NO2)
+table_TAPMUN$SO2 <- as.numeric(table_TAPMUN$SO2)
+table_TAPMUN$O3 <- as.numeric(table_TAPMUN$O3)
+table_TAPMUN$RSP <- as.numeric(table_TAPMUN$RSP)
+table_TAPMUN$FSP <- as.numeric(table_TAPMUN$FSP)
+temp_all <- rbind(temp_all, table_TAPMUN)
+
+# 6: Tsuen Wan (tw): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration228e.html?stationid=77"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration228e.html?stationid=77")
+# scrap_TW <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_TW <- scrap_TW
+table_TW$station <- 'TsuenWan'
+table_TW[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_TW[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_TW) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_TW$NO2 <- as.numeric(table_TW$NO2)
+table_TW$SO2 <- as.numeric(table_TW$SO2)
+table_TW$O3 <- as.numeric(table_TW$O3)
+table_TW$RSP <- as.numeric(table_TW$RSP)
+table_TW$FSP <- as.numeric(table_TW$FSP)
+temp_all <- rbind(temp_all, table_TW)
+
+# 7: Tung Chung (tc): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf322.html?stationid=78"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf322.html?stationid=78")
+# scrap_TC <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_TC <- scrap_TC
+table_TC$station <- 'TungChung'
+table_TC[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_TC[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_TC) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_TC$NO2 <- as.numeric(table_TC$NO2)
+table_TC$SO2 <- as.numeric(table_TC$SO2)
+table_TC$O3 <- as.numeric(table_TC$O3)
+table_TC$RSP <- as.numeric(table_TC$RSP)
+table_TC$FSP <- as.numeric(table_TC$FSP)
+temp_all <- rbind(temp_all, table_TC)
+
+# 8: Yuen Long (yl): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration1f2c.html?stationid=70"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration1f2c.html?stationid=70")
+# scrap_YL <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_YL <- scrap_YL
+table_YL$station <- 'YuenLong'
+table_YL[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_YL[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_YL) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_YL$NO2 <- as.numeric(table_YL$NO2)
+table_YL$SO2 <- as.numeric(table_YL$SO2)
+table_YL$O3 <- as.numeric(table_YL$O3)
+table_YL$RSP <- as.numeric(table_YL$RSP)
+table_YL$FSP <- as.numeric(table_YL$FSP)
+temp_all <- rbind(temp_all, table_YL)
+
+# 9: roadside_Causeway Bay (cwb): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration5ca5.html?stationid=71"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration5ca5.html?stationid=71")
+# scrap_CWB <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_CWB <- scrap_CWB
+table_CWB$station <- 'roadside_CausewayBay'
+table_CWB[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_CWB[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_CWB) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_CWB$NO2 <- as.numeric(table_CWB$NO2)
+table_CWB$SO2 <- as.numeric(table_CWB$SO2)
+table_CWB$O3 <- as.numeric(table_CWB$O3)
+table_CWB$RSP <- as.numeric(table_CWB$RSP)
+table_CWB$FSP <- as.numeric(table_CWB$FSP)
+temp_all <- rbind(temp_all, table_CWB)
+
+# 10: roadside_Central (cent): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf9dd.html?stationid=79"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf9dd.html?stationid=79")
+# scrap_CENT <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_CENT <- scrap_CENT
+table_CENT$station <- 'roadside_Central'
+table_CENT[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_CENT[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_CENT) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_CENT$NO2 <- as.numeric(table_CENT$NO2)
+table_CENT$SO2 <- as.numeric(table_CENT$SO2)
+table_CENT$O3 <- as.numeric(table_CENT$O3)
+table_CENT$RSP <- as.numeric(table_CENT$RSP)
+table_CENT$FSP <- as.numeric(table_CENT$FSP)
+temp_all <- rbind(temp_all, table_CENT)
+
+# 11: Sha Tin: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration2c5f.html?stationid=75"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration2c5f.html?stationid=75")
+# scrap_SHATIN <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_SHATIN <- scrap_SHATIN
+table_SHATIN$station <- 'ShaTin'
+table_SHATIN[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_SHATIN[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_SHATIN) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_SHATIN$NO2 <- as.numeric(table_SHATIN$NO2)
+table_SHATIN$SO2 <- as.numeric(table_SHATIN$SO2)
+table_SHATIN$O3 <- as.numeric(table_SHATIN$O3)
+table_SHATIN$RSP <- as.numeric(table_SHATIN$RSP)
+table_SHATIN$FSP <- as.numeric(table_SHATIN$FSP)
+temp_all <- rbind(temp_all, table_SHATIN)
+
+# 12: Kwun Tong (kt): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationfb71.html?stationid=74"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationfb71.html?stationid=74")
+# scrap_KT <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_KT <- scrap_KT
+table_KT$station <- 'KwunTong'
+table_KT[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_KT[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_KT) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_KT$NO2 <- as.numeric(table_KT$NO2)
+table_KT$SO2 <- as.numeric(table_KT$SO2)
+table_KT$O3 <- as.numeric(table_KT$O3)
+table_KT$RSP <- as.numeric(table_KT$RSP)
+table_KT$FSP <- as.numeric(table_KT$FSP)
+temp_all <- rbind(temp_all, table_KT)
+
+# 13: Tseung Kwan O (tko): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration0b35.html?stationid=83"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration0b35.html?stationid=83")
+# scrap_TKO <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_TKO <- scrap_TKO
+table_TKO$station <- 'TseungKwanO'
+table_TKO[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_TKO[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_TKO) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_TKO$NO2 <- as.numeric(table_TKO$NO2)
+table_TKO$SO2 <- as.numeric(table_TKO$SO2)
+table_TKO$O3 <- as.numeric(table_TKO$O3)
+table_TKO$RSP <- as.numeric(table_TKO$RSP)
+table_TKO$FSP <- as.numeric(table_TKO$FSP)
+temp_all <- rbind(temp_all, table_TKO)
+
+# 14: Eastern (east): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentratione1a6.html?stationid=73"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentratione1a6.html?stationid=73")
+# scrap_EAST <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_EAST <- scrap_EAST
+table_EAST$station <- 'Eastern'
+table_EAST[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_EAST[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_EAST) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_EAST$NO2 <- as.numeric(table_EAST$NO2)
+table_EAST$SO2 <- as.numeric(table_EAST$SO2)
+table_EAST$O3 <- as.numeric(table_EAST$O3)
+table_EAST$RSP <- as.numeric(table_EAST$RSP)
+table_EAST$FSP <- as.numeric(table_EAST$FSP)
+temp_all <- rbind(temp_all, table_EAST)
+
+# 15: roadside_Mong Kok (mk): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration9c57.html?stationid=81"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration9c57.html?stationid=81")
+# scrap_MK <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_MK <- scrap_MK
+table_MK$station <- 'roadside_MongKok'
+table_MK[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_MK[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_MK) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_MK$NO2 <- as.numeric(table_MK$NO2)
+table_MK$SO2 <- as.numeric(table_MK$SO2)
+table_MK$O3 <- as.numeric(table_MK$O3)
+table_MK$RSP <- as.numeric(table_MK$RSP)
+table_MK$FSP <- as.numeric(table_MK$FSP)
+temp_all <- rbind(temp_all, table_MK)
+
+# 16: Tuen Mun: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration233a.html?stationid=76"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration233a.html?stationid=76")
+# scrap_TUENMUN <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_TUENMUN <- scrap_TUENMUN
+table_TUENMUN$station <- 'TuenMun'
+table_TUENMUN[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_TUENMUN[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_TUENMUN) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_TUENMUN$NO2 <- as.numeric(table_TUENMUN$NO2)
+table_TUENMUN$SO2 <- as.numeric(table_TUENMUN$SO2)
+table_TUENMUN$O3 <- as.numeric(table_TUENMUN$O3)
+table_TUENMUN$RSP <- as.numeric(table_TUENMUN$RSP)
+table_TUENMUN$FSP <- as.numeric(table_TUENMUN$FSP)
+temp_all <- rbind(temp_all, table_TUENMUN)
+
+# 17: Southern (south): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationaf02.html?stationid=84"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationaf02.html?stationid=84")
+# scrap_SOUTH <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_SOUTH <- scrap_SOUTH
+table_SOUTH$station <- 'Southern'
+table_SOUTH[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_SOUTH[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_SOUTH) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_SOUTH$NO2 <- as.numeric(table_SOUTH$NO2)
+table_SOUTH$SO2 <- as.numeric(table_SOUTH$SO2)
+table_SOUTH$O3 <- as.numeric(table_SOUTH$O3)
+table_SOUTH$RSP <- as.numeric(table_SOUTH$RSP)
+table_SOUTH$FSP <- as.numeric(table_SOUTH$FSP)
+
+temp_SOUTH <- table_SOUTH
+temp_SOUTH <- na.locf(temp_SOUTH, fromLast = FALSE)
+temp_all <- rbind(temp_all, temp_SOUTH)
+
+# 18: North: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration084c.html?stationid=85"
+# doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration084c.html?stationid=85")
+# scrap_NORTH <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
+# table_NORTH <- scrap_NORTH
+table_NORTH$station <- 'North'
+table_NORTH[, c('NO2', 'O3', 'SO2', 'PM10', 'PM2.5', 'station')] <- table_NORTH[, c('station', 'NO2', 'SO2', 'O3', 'PM10', 'PM2.5')]
+colnames(table_NORTH) <- c('date', 'station', 'NO2', 'SO2', 'O3', 'RSP', 'FSP')
+table_NORTH$NO2 <- as.numeric(table_NORTH$NO2)
+table_NORTH$SO2 <- as.numeric(table_NORTH$SO2)
+table_NORTH$O3 <- as.numeric(table_NORTH$O3)
+table_NORTH$RSP <- as.numeric(table_NORTH$RSP)
+table_NORTH$FSP <- as.numeric(table_NORTH$FSP)
+temp_all <- rbind(temp_all, table_NORTH)
+
+```
+
+
