@@ -237,10 +237,22 @@ write_excel_csv(YuenLong, "C:\\Users\\user\\OneDrive\\Documents\\AQHI data\\clea
 # connection_string <- 'mongodb+srv://Thornask:xxx@cluster0.neeez8b.mongodb.net/test'
 # centralwest_collection <- mongo(collection="CentralWest", db="dbTseries", url=connection_string)
 # centralwest_collection$count()
-# centralwest_collection$find('{"date": {"$gte": {"$date":"2023-05-11T15:00:00Z"}}}')
+# centralwest_collection$find('{"date": {"$gte": {"$date":"2023-05-12T15:00:00Z"}}}')
 # centralwest_collection$find('{"date": {"$gte": {"$date":"2022-06-30T23:00:00Z"}}}')
 # north_collection$find('{"date": {"$date":"2023-05-11T14:00:00Z"}}')
 ```
+# draft
+```{r}
+#temp_all$date <- strsplit(temp_all$date, '/')
+
+## (Remove the data before years 2014)
+#temp_all <- temp_all[as.numeric(temp_all$date[[]]) >= 2014, ]
+
+#for (i in 1:nrow(temp_all)){
+#     temp_all$date[i] <- ISOdate(as.numeric(temp_all$date[[i]][3]), as.numeric(temp_all$date[[i]][2]), as.numeric(temp_all$date[[i]][1]), as.numeric(temp_all$hour[i]), 0, 0)
+# }
+```
+
 ### (debugging for mongodb access)
 ```{r}
 debug <- mongo(collection="debug", db="debug", url=connection_string)
@@ -289,3 +301,8 @@ if(
 ## β(PM2.5) = 0.0002180567
 
 ```
+
+```{r}
+# a <- read_csv("C:\\Users\\user\\Desktop\\all_wo_NULL\\all_wo_NULL.csv")
+```
+

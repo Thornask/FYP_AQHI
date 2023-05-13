@@ -2,21 +2,19 @@
 
 ### requiring
 
-
-# install.packages("tidyverse")
 require("tidyverse")
 require("readr")
 require(zoo)
-
-
-### scraping
-
-
-# install.packages("rvest")
 require(rvest)
+require(mongolite)
+
 
 ## Scraping
+
 doc2 <- read_html("https://www.aqhi.gov.hk/en.html")
+
+
+### Time scraping
 
 # dateTime of current version: table_time
 text_time <- html_elements(doc2, xpath="//*[@id='tblCurrAQHI']/tbody/tr[2]/td[1]") %>% html_text() %>% strsplit(" ")
@@ -33,437 +31,642 @@ if(is.na(temp_timestamp[[1]][2])){
   timestamp <- paste0(temp_timestamp[[1]][1], "T", temp_timestamp[[1]][2], "Z")
 }
 
-# pollutant concentration scraping
+
+### pollutant concentration scraping
+
 table_test <- html_elements(doc2, xpath = "//*[contains(@class, 'cMapPopup ui-corner-all')]/table") %>% html_table()
 
 
-### mongodb accessing
-
-
-# install.packages("mongolite")
-require(mongolite)
+## Mongodb accessing
 
 # link for accessing mongodb 
 connection_string <- 'mongodb+srv://admin:fypadmin@cluster0.neeez8b.mongodb.net/test'
 
 ## Access and insert data to each collections:
 
-# 1: CentralWestern (cwest)
+
+### 1: CentralWestern (cwest)
+
 centralwest_collection <- mongo(collection="CentralWest", db="dbTseries", url=connection_string)
 if(
   nrow( centralwest_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 1
-  cwest_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  cwest_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  cwest_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  cwest_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  cwest_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', cwest_NO2, ', "FSP": ', cwest_FSP, ', "SO2": ', 
-                cwest_SO2, ', "RSP": ', cwest_RSP, ', "O3": ', cwest_O3, ', "station": "CentralWest"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cw_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cw_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cw_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cw_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cw_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cw_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cw_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cw_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cw_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cw_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "CentralWest"}' )
+  
   centralwest_collection$insert(str)
 }
 
-# 2: Kwai Chung (kc)
+
+### 2: Kwai Chung (kc)
+
 kwaichung_collection <- mongo(collection="KwaiChung", db="dbTseries", url=connection_string)
 if(
   nrow( kwaichung_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 2
-  kc_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  kc_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  kc_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  kc_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  kc_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', kc_NO2, ', "FSP": ', kc_FSP, ', "SO2": ', 
-                kc_SO2, ', "RSP": ', kc_RSP, ', "O3": ', kc_O3, ', "station": "KwaiChung"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kc_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kc_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kc_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kc_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kc_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kc_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kc_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kc_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kc_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kc_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "KwaiChung"}' )
+  
   kwaichung_collection$insert(str)
-}
+} 
 
-# 3: Sham Shui Po (ssp)
+
+### 3: Sham Shui Po (ssp)
+
 shamshuipo_collection <- mongo(collection="ShamShuiPo", db="dbTseries", url=connection_string)
 if(
   nrow( shamshuipo_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 3
-  ssp_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  ssp_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  ssp_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  ssp_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  ssp_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', ssp_NO2, ', "FSP": ', ssp_FSP, ', "SO2": ', 
-                ssp_SO2, ', "RSP": ', ssp_RSP, ', "O3": ', ssp_O3, ', "station": "ShamShuiPo"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\ssp_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\ssp_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\ssp_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\ssp_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\ssp_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\ssp_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\ssp_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\ssp_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\ssp_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\ssp_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "ShamShuiPo"}' )
+  
   shamshuipo_collection$insert(str)
 }
 
-# 4: Tai Po 
+
+### 4: Tai Po 
+
 taipo_collection <- mongo(collection="TaiPo", db="dbTseries", url=connection_string)
 if(
   nrow( taipo_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 4
-  taipo_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  taipo_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  taipo_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  taipo_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  taipo_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', taipo_NO2, ', "FSP": ', taipo_FSP, ', "SO2": ', 
-                taipo_SO2, ', "RSP": ', taipo_RSP, ', "O3": ', taipo_O3, ', "station": "TaiPo"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\taipo_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\taipo_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\taipo_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\taipo_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\taipo_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\taipo_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kc_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\taipo_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\taipo_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\taipo_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "TaiPo"}' )
   taipo_collection$insert(str)
 }
 
-# 5: Tap Mun 
+
+### 5: Tap Mun 
+
 tapmun_collection <- mongo(collection="TapMun", db="dbTseries", url=connection_string)
 if(
   nrow( tapmun_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 5
-  tapmun_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  tapmun_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  tapmun_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  tapmun_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  tapmun_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', tapmun_NO2, ', "FSP": ', tapmun_FSP, ', "SO2": ', 
-                tapmun_SO2, ', "RSP": ', tapmun_RSP, ', "O3": ', tapmun_O3, ', "station": "TapMun"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tapmun_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tapmun_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tapmun_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tapmun_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tapmun_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tapmun_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tapmun_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tapmun_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tapmun_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tapmun_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "TapMun"}' )
   tapmun_collection$insert(str)
 }
 
-# 6: Tsuen Wan (tw)
+
+### 6: Tsuen Wan (tw)
+
 tsuenwan_collection <- mongo(collection="TsuenWan", db="dbTseries", url=connection_string)
 if(
   nrow( tsuenwan_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 6
-  tw_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  tw_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  tw_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  tw_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  tw_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', tw_NO2, ', "FSP": ', tw_FSP, ', "SO2": ', 
-                tw_SO2, ', "RSP": ', tw_RSP, ', "O3": ', tw_O3, ', "station": "TsuenWan"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tw_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tw_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tw_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tw_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tw_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tw_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tw_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tw_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tw_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tw_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "TsuenWan"}' )
   tsuenwan_collection$insert(str)
 }
 
-# 7: Tung Chung (tc)
+
+### 7: Tung Chung (tc)
+
 tungchung_collection <- mongo(collection="TungChung", db="dbTseries", url=connection_string)
 if(
   nrow( tungchung_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 7
-  tc_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  tc_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  tc_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  tc_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  tc_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', tc_NO2, ', "FSP": ', tc_FSP, ', "SO2": ', 
-                tc_SO2, ', "RSP": ', tc_RSP, ', "O3": ', tc_O3, ', "station": "TungChung"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tc_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tc_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tc_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tc_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tc_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tc_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tc_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tc_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tc_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tc_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "TungChung"}' )
   tungchung_collection$insert(str)
 }
 
-# 8: Yuen Long (yl)
+
+### 8: Yuen Long (yl)
+
 yuenlong_collection <- mongo(collection="YuenLong", db="dbTseries", url=connection_string)
 if(
   nrow( yuenlong_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 8
-  yl_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  yl_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  yl_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  yl_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  yl_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', yl_NO2, ', "FSP": ', yl_FSP, ', "SO2": ', 
-                yl_SO2, ', "RSP": ', yl_RSP, ', "O3": ', yl_O3, ', "station": "YuenLong"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\yl_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\yl_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\yl_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\yl_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\yl_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\yl_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\yl_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\yl_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\yl_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\yl_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "YuenLong"}' )
   yuenlong_collection$insert(str)
 }
 
-# 9: roadside_CausewayBay (cwb)
+
+### 9: roadside_CausewayBay (cwb)
+
 causewaybay_collection <- mongo(collection="roadside_CausewayBay", db="dbTseries", url=connection_string)
 if(
   nrow( causewaybay_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 9
-  cwb_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  cwb_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  cwb_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  cwb_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  cwb_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', cwb_NO2, ', "FSP": ', cwb_FSP, ', "SO2": ', 
-                cwb_SO2, ', "RSP": ', cwb_RSP, ', "O3": ', cwb_O3, ', "station": "roadside_CausewayBay"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cwb_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cwb_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cwb_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cwb_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cwb_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cwb_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cwb_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cwb_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cwb_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cwb_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "roadside_CausewayBay"}' )
   causewaybay_collection$insert(str)
 }
 
-# 10: roadside_Central (cent)
+
+### 10: roadside_Central (cent)
+
 central_collection <- mongo(collection="roadside_Central", db="dbTseries", url=connection_string)
 if(
   nrow( central_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 10
-  cent_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  cent_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  cent_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  cent_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  cent_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', cent_NO2, ', "FSP": ', cent_FSP, ', "SO2": ', 
-                cent_SO2, ', "RSP": ', cent_RSP, ', "O3": ', cent_O3, ', "station": "roadside_Central"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cent_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cent_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cent_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cent_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cent_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cent_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cent_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tapmun_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cent_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\cent_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "roadside_Central"}' )
   central_collection$insert(str)
 }
 
-# 11: Sha Tin 
+
+### 11: Sha Tin 
+
 shatin_collection <- mongo(collection="ShaTin", db="dbTseries", url=connection_string)
 if(
   nrow( shatin_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 11
-  shatin_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  shatin_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  shatin_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  shatin_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  shatin_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', shatin_NO2, ', "FSP": ', shatin_FSP, ', "SO2": ', 
-                shatin_SO2, ', "RSP": ', shatin_RSP, ', "O3": ', shatin_O3, ', "station": "ShaTin"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\shatin_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\shatin_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\shatin_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\shatin_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\shatin_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\shatin_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\shatin_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\shatin_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\shatin_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\shatin_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "ShaTin"}' )
   shatin_collection$insert(str)
 }
 
-# 12: Kwun Tong (kt)
+
+### 12: Kwun Tong (kt)
+
 kwuntong_collection <- mongo(collection="KwunTong", db="dbTseries", url=connection_string)
 if(
   nrow( kwuntong_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 12
-  kt_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  kt_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  kt_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  kt_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  kt_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', kt_NO2, ', "FSP": ', kt_FSP, ', "SO2": ', 
-                kt_SO2, ', "RSP": ', kt_RSP, ', "O3": ', kt_O3, ', "station": "KwunTong"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kt_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kt_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kt_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kt_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kt_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kt_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kt_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kt_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kt_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\kt_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "KwunTong"}' )
   kwuntong_collection$insert(str)
 }
 
-# 13: Tseung Kwan O (tko)
+
+### 13: Tseung Kwan O (tko)
+
 tseungkwano_collection <- mongo(collection="TseungKwanO", db="dbTseries", url=connection_string)
 if(
   nrow( tseungkwano_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 13
-  tko_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  tko_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  tko_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  tko_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  tko_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', tko_NO2, ', "FSP": ', tko_FSP, ', "SO2": ', 
-                tko_SO2, ', "RSP": ', tko_RSP, ', "O3": ',tko_O3, ', "station": "TseungKwanO"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tko_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tko_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tko_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tko_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tko_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tko_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tko_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tko_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tko_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tko_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "TseungKwanO"}' )
   tseungkwano_collection$insert(str)
 }
 
-# 14: Easrtern (east)
+
+### 14: Easrtern (east)
+
 eastern_collection <- mongo(collection="Eastern", db="dbTseries", url=connection_string)
 if(
   nrow( eastern_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 14
-  east_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  east_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  east_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  east_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  east_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', east_NO2, ', "FSP": ', east_FSP, ', "SO2": ', 
-                east_SO2, ', "RSP": ', east_RSP, ', "O3": ', east_O3, ', "station": "Eastern"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\east_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\east_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\east_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\east_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\east_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\east_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\east_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\east_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\east_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\east_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "Eastern"}' )
   eastern_collection$insert(str)
 }
 
-# 15: roadside_MongKok (mk)
+
+### 15: roadside_MongKok (mk)
+
 mongkok_collection <- mongo(collection="roadside_MongKok", db="dbTseries", url=connection_string)
 if(
   nrow( mongkok_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 15
-  mk_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  mk_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  mk_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  mk_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  mk_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', mk_NO2, ', "FSP": ', mk_FSP, ', "SO2": ', 
-                mk_SO2, ', "RSP": ', mk_RSP, ', "O3": ', mk_O3, ', "station": "roadside_MongKok"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\mk_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\mk_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\mk_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\mk_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\mk_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\mk_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\mk_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\mk_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\mk_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\mk_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "roadside_MongKok"}' )
   mongkok_collection$insert(str)
 }
 
-# 16: Tuen Mun 
+
+### 16: Tuen Mun 
+
 tuenmun_collection <- mongo(collection="TuenMun", db="dbTseries", url=connection_string)
 if(
   nrow( tuenmun_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 16
-  tuenmun_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  tuenmun_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  tuenmun_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  tuenmun_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  tuenmun_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', tuenmun_NO2, ', "FSP": ', tuenmun_FSP, ', "SO2": ', 
-                tuenmun_SO2, ', "RSP": ', tuenmun_RSP, ', "O3": ', tuenmun_O3, ', "station": "TuenMun"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tuenmun_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tuenmun_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tuenmun_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tuenmun_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tuenmun_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tuenmun_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tuenmun_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tuenmun_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tuenmun_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\tuenmun_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "TuenMun"}' )
   tuenmun_collection$insert(str)
 }
 
-# 17: Southern (south)
+
+### 17: Southern (south)
+
 southern_collection <- mongo(collection="Southern", db="dbTseries", url=connection_string)
 if(
   nrow( southern_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 17
-  south_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  south_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  south_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  south_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  south_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', south_NO2, ', "FSP": ', south_FSP, ', "SO2": ', 
-                south_SO2, ', "RSP": ', south_RSP, ', "O3": ', south_O3, ', "station": "Southern"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\south_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\south_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\south_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\south_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\south_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\south_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\south_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\south_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\south_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\south_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "Southern"}' )
   southern_collection$insert(str)
 }
 
-# 18: North
+
+### 18: North
+
 north_collection <- mongo(collection="North", db="dbTseries", url=connection_string)
 if(
   nrow( north_collection$find( paste0('{"date": {"$date": "', timestamp, '"}}') )
   ) == 0){
   p <- 18
-  north_NO2 <- if(!is.na(table_test[[p]][4,2])){as.numeric(table_test[[p]][4,2])} 
-  north_FSP <- if(!is.na(table_test[[p]][4,4])){as.numeric(table_test[[p]][4,4])}
-  north_SO2 <- if(!is.na(table_test[[p]][5,2])){as.numeric(table_test[[p]][5,2])}
-  north_RSP <- if(!is.na(table_test[[p]][5,4])){as.numeric(table_test[[p]][5,4])}
-  north_O3  <- if(!is.na(table_test[[p]][6,2])){as.numeric(table_test[[p]][6,2])}
-  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', north_NO2, ', "FSP": ', north_FSP, ', "SO2": ', 
-                north_SO2, ', "RSP": ', north_RSP, ', "O3": ', north_O3, ', "station": "North"}' )
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\north_no2.txt"))
+  p_NO2 <- if(!is.na(as.numeric(table_test[[p]][4,2]))){as.numeric(table_test[[p]][4,2])} else {last}
+  write(p_NO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\north_no2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\north_fsp.txt"))
+  p_FSP <- if(!is.na(as.numeric(table_test[[p]][4,4]))){as.numeric(table_test[[p]][4,4])} else {last}
+  write(p_FSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\north_fsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\north_so2.txt"))
+  p_SO2 <- if(!is.na(as.numeric(table_test[[p]][5,2]))){as.numeric(table_test[[p]][5,2])} else {last}
+  write(p_SO2, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\north_so2.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\north_rsp.txt"))
+  p_RSP <- if(!is.na(as.numeric(table_test[[p]][5,4]))){as.numeric(table_test[[p]][5,4])} else {last}
+  write(p_RSP, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\north_rsp.txt")
+  
+  last <- as.numeric(read_file("C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\north_o3.txt"))
+  p_O3  <- if(!is.na(as.numeric(table_test[[p]][6,2]))){as.numeric(table_test[[p]][6,2])} else {last}
+  write(p_O3, "C:\\Users\\user\\OneDrive\\Documents\\GitHub\\FYP_AQHI\\north_o3.txt")
+  
+  str <- paste0('{"date": {"$date": "', timestamp, '"}, "NO2": ', p_NO2, ', "FSP": ', p_FSP, ', "SO2": ', 
+                p_SO2, ', "RSP": ', p_RSP, ', "O3": ', p_O3, ', "station": "North"}' )
   north_collection$insert(str)
 }
 
 
-
-### (backup in case for missing data of the past 24 hours)
-
-
-# 1: CentralWestern (cwest): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration45fd.html?stationid=80"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration45fd.html?stationid=80")
-table_CW <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#cw_05102015 <- as.data.frame(table_CW)[c(1,2,3,4,6,7)]
-
-#for (i in 1:24){
-#  cw_05101930$Date.Time[i] <- paste0(strsplit(unlist(cw_05101930[1])[2], " ")
-#}
-
-## order of pollutant when web scraping: NO2, O3, SO2, RSP(PM10), FSP(PM2.5)
-
-# 2: Kwai Chung (kc): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration30e8.html?stationid=72"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration30e8.html?stationid=72")
-table_KC <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#kc_05102015 <- as.data.frame(table_KC)[c(1,2,3,4,6,7)]
-
-# 3: Sham Shui Po (ssp): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationdb46.html?stationid=66"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationdb46.html?stationid=66")
-table_SSP <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#ssp_05102015 <- as.data.frame(table_SSP)[c(1,2,3,4,6,7)]
-
-# 4: Tai Po: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration6e9c.html?stationid=69"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration6e9c.html?stationid=69")
-table_TAIPO <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#taipo_05102015 <- as.data.frame(table_TAIPO)[c(1,2,3,4,6,7)]
-
-# 5: Tap Mun: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration537c.html?stationid=82" 
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration537c.html?stationid=82")
-table_TAPMUN <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#tapmun_05102015 <- as.data.frame(table_TAPMUN)[c(1,2,3,4,6,7)]
-
-# 6: Tsuen Wan (tw): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration228e.html?stationid=77"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration228e.html?stationid=77")
-table_TW <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#tw_05102015 <- as.data.frame(table_TW)[c(1,2,3,4,6,7)]
-
-# 7: Tung Chung (tc): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf322.html?stationid=78"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf322.html?stationid=78")
-table_TC <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#tc_05102015 <- as.data.frame(table_TC)[c(1,2,3,4,6,7)]
-
-# 8: Yuen Long (yl): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration1f2c.html?stationid=70"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration1f2c.html?stationid=70")
-table_YL <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#yl_05102015 <- as.data.frame(table_YL)[c(1,2,3,4,6,7)]
-
-# 9: roadside_Causeway Bay (cwb): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration5ca5.html?stationid=71"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration5ca5.html?stationid=71")
-table_CWB <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#cwb_05102015 <- as.data.frame(table_CWB)[c(1,2,3,4,6,7)]
-
-# 10: roadside_Central (cent): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf9dd.html?stationid=79"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationf9dd.html?stationid=79")
-table_CENT <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#cent_05102015 <- as.data.frame(table_CENT)[c(1,2,3,4,6,7)]
-
-# 11: Sha Tin: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration2c5f.html?stationid=75"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration2c5f.html?stationid=75")
-table_SHATIN <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#shatin_05102015 <- as.data.frame(table_SHATIN)[c(1,2,3,4,6,7)]
-
-# 12: Kwun Tong (kt): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationfb71.html?stationid=74"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationfb71.html?stationid=74")
-table_KT <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#kt_05102015 <- as.data.frame(table_KT)[c(1,2,3,4,6,7)]
-
-# 13: Tseung Kwan O (tko): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration0b35.html?stationid=83"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration0b35.html?stationid=83")
-table_TKO <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#tko_05102015 <- as.data.frame(table_TKO)[c(1,2,3,4,6,7)]
-
-# 14: Eastern (east): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentratione1a6.html?stationid=73"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentratione1a6.html?stationid=73")
-table_EAST <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#east_05102015 <- as.data.frame(table_EAST)[c(1,2,3,4,6,7)]
-
-# 15: roadside_Mong Kok (mk): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration9c57.html?stationid=81"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration9c57.html?stationid=81")
-table_MK <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#mk_05102015 <- as.data.frame(table_MK)[c(1,2,3,4,6,7)]
-
-# 16: Tuen Mun: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration233a.html?stationid=76"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration233a.html?stationid=76")
-table_TUENMUN <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#tuenmun_05102015 <- as.data.frame(table_TUENMUN)[c(1,2,3,4,6,7)]
-
-# 17: Southern (south): "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationaf02.html?stationid=84"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentrationaf02.html?stationid=84")
-table_SOUTH <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#south_05102015 <- as.data.frame(table_SOUTH)[c(1,2,3,4,6,7)]
-
-# 18: North: "https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration084c.html?stationid=85"
-doc <- read_html("https://www.aqhi.gov.hk/en/aqhi/past-24-hours-pollutant-concentration084c.html?stationid=85")
-table_NORTH <- as.data.frame(html_elements(doc, xpath = "//*[contains(@id, 'cltNormal')]/table") %>% html_table())[c(1,2,3,4,6,7)]
-
-#north_05102015 <- as.data.frame(table_NORTH)[c(1,2,3,4,6,7)]
-
-
-# Log
-
+## Log
 
 # Check if log.rds exists
 
 if(file.exists("log.rds")) {
   
-  # Read in current log and assign to `log`
+  # Read in current log and assign to 'log'
   
   log <- readRDS("log.rds")
   
@@ -472,7 +675,7 @@ if(file.exists("log.rds")) {
   last_run <- Sys.time()
   
   # Add a row to our one-column dataframe
-  # Assign it the value held in `last_run`
+  # Assign it the value held in 'last_run'
   
   log[nrow(log) + 1, 1] <- last_run
   
